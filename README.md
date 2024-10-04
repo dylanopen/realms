@@ -44,12 +44,12 @@ use realms::*; // import everything from realms
 
 fn main()
 {
-    let mut w: Window = Window::new(title: "Welcome to Realms", width: 800, height: 450); // create window frame
-    let fill: Rect = Rect::fill(window: &w, Color::rgb(r: 91, g: 23, b: 127)); // create a rectangle that fills the screen
+    let mut w: Window = Window::new("Welcome to Realms", 800, 450); // create window frame
+    let fill: Rect = Rect::fill(&w, Color::rgb(91, 23, 127)); // create a rectangle that fills the screen
 
     while w.is_running() { // loop while window is open
         w.new_frame(); // initialise a new window frame (and draw to screen)
-        fill.draw(window: &mut w); // draw fill node to clear the screen purple
+        fill.draw(&mut w); // draw fill node to clear the screen purple
     }
 }
 ```
