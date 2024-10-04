@@ -1,9 +1,41 @@
+//! This module contains the code for the rectangle node
+//! (`Rect`).
+
 use crate::{Color, NodeColor, NodeDraw, NodePosition, NodeSize, Window};
 
+/// The `Rect` struct stores information about a rectangle
+/// node.
+/// This node has a:
+///   - Position
+///   - Size
+///   - Color
 pub struct Rect {
     pos: (f32, f32),
     size: (f32, f32),
     color: Color
+}
+
+impl Rect {
+    /// Create a new rectangle with the specified `pos`,
+    /// `size` and `color`.
+    pub fn new(pos: (f32, f32), size: (f32, f32), color: Color) -> Rect {
+        Rect {
+            pos, size, color
+        }
+    }
+
+    /// Create a rectangle with the specified `color` that
+    /// fills the entire screen.
+    /// This means the position is (0.0, 0.0) and the size
+    /// is the window size.
+    pub fn fill(window: &Window, color: Color) -> Rect {
+        let size = (window.get_width() as f32, window.get_height() as f32);
+        Rect {
+            pos: (0.0, 0.0),
+            size,
+            color,
+        }
+    }
 }
 
 impl NodePosition for Rect {
@@ -63,23 +95,6 @@ impl NodeDraw for Rect {
                 let y = y as f32;
                 window.set_pixel(self.pos.0 + x, self.pos.1 + y, self.color.clone());
             }
-        }
-    }
-}
-
-impl Rect {
-    pub fn new(pos: (f32, f32), size: (f32, f32), color: Color) -> Rect {
-        Rect {
-            pos, size, color
-        }
-    }
-
-    pub fn fill(window: &Window, color: Color) -> Rect {
-        let size = (window.get_width() as f32, window.get_height() as f32);
-        Rect {
-            pos: (0.0, 0.0),
-            size,
-            color,
         }
     }
 }

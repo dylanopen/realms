@@ -1,5 +1,25 @@
+//! The `window` module contains only the `Window` struct.
+//! The module holds functionality for creating, managing
+//! and handling input from windows.
+
 use crate::{Color, GameTime};
 
+/// `Window` is the main struct for creating a graphical
+/// application with Realms.
+/// Almost all Realms functions will reference the `Window`
+/// struct.
+///
+/// ## Example usage
+///
+/// ``` rust
+/// use realms::*;
+/// fn main() {
+///     let w = Window::new("Hello Realms", 800, 600);
+///     while w.is_running() {
+///         w.new_frame();
+///     }
+/// }
+/// ```
 pub struct Window {
     pub running: bool,
     pub time: GameTime,
@@ -10,6 +30,10 @@ pub struct Window {
 }
 
 impl Window {
+    /// Create a window with the specified `title`,
+    /// `width` and `height`.
+    /// Also creates a frame buffer with the
+    /// dimensions specified.
     pub fn new(title: &str, width: usize, height: usize) -> Window {
         let buffer = vec![Color::BLACK; width*height];
 
@@ -28,10 +52,29 @@ impl Window {
         }
     }
 
+    /// Returns a bool representing whether the window is
+    /// open (`true`) or whether it should close (`false`).
+    ///
+    /// The result is calculated based on two factors:
+    ///   - Whether you have manually closed the window by
+    ///     setting the 'running' field to false.
+    ///   - Whether the user closed the window.
+    /// If the window was closed in any of these ways, this
+    /// function will return `false`, otherwise `true`.
     pub fn is_running(&self) -> bool {
         self.mini_window.is_open() && self.running
     }
 
+    /// Modify the frame buffer by setting a pixel to the
+    /// specified color.
+    /// If the specified color *is not* opaque (i.e. its
+    /// alpha field is less than 255), it's color will be
+    /// 'added' to the previous color using the `add_layer`
+    /// method. This allows for a simple way of handling
+    /// transparency.
+    /// If the specified color *is* opaque, it simply sets
+    /// the pixel in the frame buffer to the specified
+    /// color.
     pub fn set_pixel(&mut self, x: f32, y: f32, color: Color) {
         let x = x as i32;
         let y = y as i32;
@@ -40,7 +83,13 @@ impl Window {
         }
         self.buffer[(y * self.width as i32 + x) as usize].add_layer(color);
     }
-
+    
+    /// This function should be called at the **START** of
+    /// each iteration of the game loop.
+    ///
+    /// It currently does the following:
+    ///   1. Sends the frame buffer to minifb to display.
+    ///   2. Updates the `time` field.
     pub fn new_frame(&mut self) {
         let mini_buffer = self.buffer_u32();
         self.mini_window.update_with_buffer(&mini_buffer, self.width, self.height)
@@ -48,22 +97,45 @@ impl Window {
         self.time.new_frame();
     }
 
+    /// Set the window's target framerate to the specified
+    /// frames per second (FPS).
+    ///
+    /// Note that this is simply a target and is not
+    /// guaranteed to always be reached.
     pub fn set_fps(&mut self, target_fps: usize) {
         self.mini_window.set_target_fps(target_fps);
     }
 
+    /// Manually close the window.
+    /// This sets the `running` field to `false`.
+    /// `is_running()` will return `false` after this method
+    /// is called.
     pub fn close(&mut self) {
         self.running = false;
     }
 
+    /// Get the width of the window as a `usize`.
+    /// This function simply returns `self.width`.
     pub fn get_width(&self) -> usize {
         self.width
     }
 
+    /// Get the height of the window as a `usize`.
+    /// This function simply returns `self.height`.
     pub fn get_height(&self) -> usize {
         self.height
     }
 
+    /// Helper function to convert a Vec of `Color` objects
+    /// to a Vec of `u32`s.
+    ///
+    /// The input is `self.buffer`.
+    /// It is used because `minifb` requires the pixel color
+    /// data to be specified as a `u32` - a hexadecimal of
+    /// the red, green and blue components of the color.
+    ///
+    /// > Note: This method is not designed for use outsize
+    /// of the Window struct, and is therefore private.
     fn buffer_u32(&self) -> Vec<u32> {
         let mut buf: Vec<u32> = Vec::new();
         for pixel in &self.buffer {
