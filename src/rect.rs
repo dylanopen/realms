@@ -3,7 +3,30 @@
 
 use crate::{Color, NodeDraw, Vec2f, Window};
 
-
+/// The `Rect` struct stores information about a rectangle
+/// node.
+///
+/// This node has a:
+///   - Position
+///   - Size
+///   - Color
+///
+/// ## Example usage
+///
+/// Create a white square and draw it to the screen.
+///
+/// ``` rust
+/// let mut w = Window::new("rectangle", 800, 600);
+/// let rect = Rect::new(
+///     Vec2f::new(64.0, 64.0),
+///     Vec2f::new(32.0, 32.0),
+///     Color::rgb(255, 255, 255)
+/// );
+/// while w.is_running() {
+///     w.new_frame()
+///     rect.draw(&mut w);
+/// }
+/// ```
 pub struct Rect {
     pub pos: Vec2f,
     pub size: Vec2f,
