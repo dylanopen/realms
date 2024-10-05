@@ -12,7 +12,7 @@ fn main()
 
     while w.is_running() { // loop while window is open
         w.new_frame(); // initialise a new window frame (and draw to screen)
-        fill.draw(window: &mut w); // draw fill node to clear the screen purple
+        fill.draw(&mut w); // draw fill node to clear the screen purple
     }
 }
 ```

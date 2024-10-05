@@ -159,8 +159,8 @@ To create a rectangle, use the `new` method:
 
 ``` rust
 let rect = Rect::new(
-    (x, y),
-    (width, height),
+    Vec2f::new(x, y),
+    Vec2f::new(width, height),
     color
 );
 ```
@@ -169,8 +169,8 @@ For example:
 
 ``` rust
 let rect = Rect::new(
-    (32.0, 32.0),
-    (64.0, 64.0),
+    Vec2f::new(32.0, 32.0),
+    Vec2f::new(64.0, 64.0),
     Color::rgb(255, 127, 31)
 );
 ```
@@ -204,7 +204,7 @@ Usage:
 
 ``` rust
 Pixel::new(
-    position: (f32, f32),
+    position: Vec2f,
     color: Color
 );
 ```
@@ -218,8 +218,8 @@ Usage:
 
 ``` rust
 Rect::new(
-    position: (f32, f32),
-    size: (f32, f32),
+    position: Vec2f,
+    size: Vec2f,
     color: Color
 );
 ```
