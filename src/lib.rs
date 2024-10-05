@@ -9,17 +9,19 @@ mod window;
 mod data;
 mod node;
 mod component;
-mod rect;
-mod pixel;
 mod input;
+mod pixel;
+mod rect;
+mod sprite;
 
 pub use window::*;
 pub use data::*;
 pub use node::*;
 pub use component::*;
-pub use rect::*;
-pub use pixel::*;
 pub use input::*;
+pub use pixel::*;
+pub use rect::*;
+pub use sprite::*;
 
 pub use minifb::Key;
 pub use minifb::MouseButton;
