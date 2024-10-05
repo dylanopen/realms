@@ -90,6 +90,17 @@ impl Vec2f {
 }
 
 
+/// `Texture` is a component for storing an image.  
+/// It can be displayed using the `Sprite` node.
+///
+/// This struct also provides basic image resizing.  
+/// Currently, you must create a new `Texture` and specify
+/// its dimensions in order to resize the image.
+///
+/// > Technical info: The scaling algorithm is, by default,
+/// > set to `nearest`. This results in low-res images
+/// > being pixelated. This is useful for pixel art, but
+/// > may not be what you want.
 pub struct Texture {
     pub width: usize,
     pub height: usize,
@@ -97,6 +108,12 @@ pub struct Texture {
 }
 
 impl Texture {
+    /// Load a `Texture` from the specified `path`.  
+    /// The image is loaded from the disk and then resized
+    /// to the specified `width` and `height`.
+    ///
+    /// This function supports loading PNG images, and
+    /// **supports** transparency using alpha channels.
     pub fn load(path: &str, width: usize, height: usize) -> Texture {
         let mut ril_image = ril::Image::<ril::Rgba>::open(path)
             .expect(&format!("Failed to load image {}", path));
@@ -124,10 +141,15 @@ impl Texture {
         }
     }
 
+    /// Returns a reference to the `Color` of the pixel at
+    /// location `(x, y)` on the `Texture` (`self`).
+    ///
+    /// This function will PANIC if the requested pixel is
+    /// out of bounds (not within the image's dimensions).
     pub fn get(&self, x: usize, y: usize) -> &Color {
         self.pixels.get(y * self.width + x).expect(&format!(
-                "Could not get pixel x={}, y={} of texture (likely out of bounds)",
-                x, y
+            "Could not get pixel x={}, y={} of texture (likely out of bounds)",
+            x, y
         ))
     }
 }
