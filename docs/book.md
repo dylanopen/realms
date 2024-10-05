@@ -255,7 +255,7 @@ Example:
 
 ``` rust
 if key_down(&w, Key::W) {
-    println!("going up!");
+    println!("moving player up!");
 }
 ```
 

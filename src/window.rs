@@ -34,6 +34,12 @@ impl Window {
     /// `width` and `height`.  
     /// Also creates a frame buffer with the
     /// dimensions specified.
+    ///
+    /// ## Example usage
+    ///
+    /// ``` rust
+    /// let w = Window::new("title", 800, 600);
+    /// ```
     pub fn new(title: &str, width: usize, height: usize) -> Window {
         let buffer = vec![Color::BLACK; width*height];
 
@@ -62,6 +68,15 @@ impl Window {
     ///
     /// If the window was closed in any of these ways, this
     /// function will return `false`, otherwise `true`.
+    ///
+    /// ## Example usage
+    ///
+    /// ``` rust
+    /// while w.is_running() {
+    ///     w.new_frame();
+    ///     /* other update and draw logic */
+    /// }
+    /// ```
     pub fn is_running(&self) -> bool {
         self.mini_window.is_open() && self.running
     }
@@ -78,6 +93,13 @@ impl Window {
     /// If the specified color *is* opaque, it simply sets
     /// the pixel in the frame buffer to the specified
     /// color.
+    ///
+    /// ## Example usage
+    ///
+    /// ``` rust
+    /// // in game loop
+    /// w.set_pixel(400, 300, Color::rgb(31, 255, 31));
+    /// ```
     pub fn set_pixel(&mut self, x: f32, y: f32, color: Color) {
         let x = x as i32;
         let y = y as i32;
@@ -93,6 +115,15 @@ impl Window {
     /// It currently does the following:
     ///   1. Sends the frame buffer to minifb to display.
     ///   2. Updates the `time` field.
+    ///
+    /// ## Example usage
+    ///
+    /// ``` rust
+    /// while w.is_running() {
+    ///     w.new_frame();
+    ///     /* update and draw logic here */
+    /// }
+    /// ```
     pub fn new_frame(&mut self) {
         let mini_buffer = self.buffer_u32();
         self.mini_window.update_with_buffer(&mini_buffer, self.width, self.height)
@@ -105,6 +136,13 @@ impl Window {
     ///
     /// Note that this is simply a target and is not
     /// guaranteed to always be reached.
+    ///
+    /// ## Example usage
+    ///
+    /// ``` rust
+    /// let w = Window::new("fps", 800, 600);
+    /// w.set_fps(120);
+    /// ```
     pub fn set_fps(&mut self, target_fps: usize) {
         self.mini_window.set_target_fps(target_fps);
     }
@@ -113,6 +151,15 @@ impl Window {
     /// This sets the `running` field to `false`.  
     /// `is_running()` will return `false` after this method
     /// is called.
+    ///
+    /// ## Example usage
+    ///
+    /// ``` rust
+    /// // in game loop
+    /// if key_down(&w, Key::Escape) {
+    ///     w.close();
+    /// }
+    /// ```
     pub fn close(&mut self) {
         self.running = false;
     }
@@ -120,6 +167,13 @@ impl Window {
     /// Get the width of the window as a `usize`.
     ///
     /// This function simply returns `self.width`.
+    ///
+    /// ## Example usage
+    ///
+    /// ``` rust
+    /// let w = Window::new("example", 800, 600);
+    /// println!("The window width is {}", w.get_width());
+    /// ```
     pub fn get_width(&self) -> usize {
         self.width
     }
@@ -127,6 +181,13 @@ impl Window {
     /// Get the height of the window as a `usize`.
     ///
     /// This function simply returns `self.height`.
+    ///
+    /// ## Example usage
+    ///
+    /// ``` rust
+    /// let w = Window::new("example", 800, 600);
+    /// println!("The window height is {}", w.get_height());
+    /// ```
     pub fn get_height(&self) -> usize {
         self.height
     }

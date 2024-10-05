@@ -11,15 +11,35 @@ pub trait NodePosition {
 
     /// Returns the position of the node as an `(f32, f32)`
     /// tuple.
+    ///
+    /// ## Example usage
+    ///
+    /// ```rust
+    /// let position = node.get_pos();
+    /// println!("Node position: {:?}", position);
+    /// ```
     fn get_pos(&self) -> (f32, f32);
 
     /// Sets the position of the node to the `new_pos`
     /// position.
+    ///
+    /// ## Example usage
+    ///
+    /// ```rust
+    /// node.set_pos((100.0, 100.0));
+    /// ```
     fn set_pos(&mut self, new_pos: (f32, f32));
 
     /// Changes the position of the node by adding the `x`
     /// and `y` components together and storing the result
     /// in `self`.
+    ///
+    /// ## Example usage
+    ///
+    /// ```rust
+    /// let speed = 20.0;
+    /// node.change_pos((speed, 0.0));
+    /// ```
     fn change_pos(&mut self, delta_pos: (f32, f32));
 }
 
@@ -29,6 +49,14 @@ pub trait NodeSize {
 
     /// Returns the display size of the node as an
     /// `(f32, f32)` tuple.
+    ///
+    /// ## Example usage
+    ///
+    /// ```rust
+    /// if node.get_size().0 > 50 {
+    ///     println!("Node has popped!")
+    /// }
+    /// ```
     fn get_size(&self) -> (f32, f32);
 
     /// Sets the display size of the node to the specified
@@ -36,6 +64,14 @@ pub trait NodeSize {
     ///
     /// > Note: not all nodes support resizing, so this
     /// > function may panic.
+    ///
+    /// ## Example usage
+    ///
+    /// ```rust
+    /// if node.get_size().0 > 50.0 {
+    ///     node.set_size((10.0, 10.0));
+    /// }
+    /// ```
     fn set_size(&mut self, new_size: (f32, f32));
 
     /// Changes the position of the node by adding the
@@ -44,6 +80,14 @@ pub trait NodeSize {
     ///
     /// > Note: not all nodes support resizing, so this
     /// > function may panic.
+    ///
+    /// ## Example usage
+    ///
+    /// ```rust
+    /// if mouse_down_left(&w) {
+    ///     node.change_size((3.5, 3.5));
+    /// }
+    /// ```
     fn change_size(&mut self, delta_size: (f32, f32));
 }
 

@@ -39,6 +39,14 @@ impl Color {
     /// green, blue and alpha (opacity) components.  
     /// These components should be specified as a u8 value
     /// (between 0-255).
+    ///
+    /// ## Example usage
+    ///
+    /// ``` rust
+    /// let transparent = Color::rgba(0, 0, 0, 0);
+    /// let white = Color::rgba(255, 255, 255, 255);
+    /// let translucent_blue = Color::rgba(31, 127, 255, 100);
+    /// ```
     pub fn rgba(r: u8, g: u8, b: u8, a: u8) -> Color {
         Color { r, g, b, a }
     }
@@ -49,6 +57,15 @@ impl Color {
     /// (between 0-255).
     ///
     /// Alpha (`a`) is assumed to be `255` (fully opaque).
+    ///
+    /// ## Example usage
+    ///
+    /// ``` rust
+    /// let red = Color::rgb(255, 0, 0);
+    /// let green = Color::rgb(0, 255, 0);
+    /// let blue = Color::rgb(0, 0, 255);
+    /// let yellow = Color::rgb(255, 255, 0);
+    /// ```
     pub fn rgb(r: u8, g: u8, b: u8) -> Color {
         Color::rgba(r, g, b, 255)
     }
@@ -57,6 +74,12 @@ impl Color {
     /// `black`.
     ///
     /// Shorthand for `Color::rgb(0, 0, 0)`.
+    ///
+    /// ## Example usage
+    ///
+    /// ``` rust
+    /// let black = Color::new();
+    /// ```
     pub fn new() -> Color {
         Color::rgba(0, 0, 0, 255)
     }
@@ -118,6 +141,12 @@ impl GameTime {
     ///   - `startup` is initialised to the current time.
     ///   - `frame_start` is initialised to the current
     ///     time.
+    ///
+    /// ## Example usage
+    ///
+    /// ``` rust
+    /// let time = GameTime::new();
+    /// ```
     pub fn new() -> GameTime {
         GameTime {
             delta: Duration::new(0, 0),
@@ -131,6 +160,12 @@ impl GameTime {
     ///
     /// Update the GameTime object based on the current
     /// time.
+    ///
+    /// ## Example usage (from `Window` struct)
+    ///
+    /// ``` rust
+    /// self.time.new_frame();
+    /// ```
     pub fn new_frame(&mut self) {
         let now = Instant::now();
         self.delta = now - self.frame_start;
@@ -143,6 +178,12 @@ impl GameTime {
     /// This is the time between the last two calls of
     /// `self.new_frame` (a method called automatically by
     /// `Window::new_frame`).
+    ///
+    /// ## Example usage
+    ///
+    /// ``` rust
+    /// let player_speed = 100 * w.time.delta();
+    /// ```
     pub fn delta(&self) -> f32 {
         self.delta.as_secs_f32()
     }
@@ -153,6 +194,12 @@ impl GameTime {
     /// time, so changes each frame. 
     ///
     /// The framerate is calculated as `1.0 / delta`.
+    ///
+    /// ## Example usage
+    ///
+    /// ```rust
+    /// println!("Game running at {} FPS", w.time.fps());
+    /// ```
     pub fn fps(&self) -> f32 {
         1.0 / self.delta.as_secs_f32()
     }
@@ -162,6 +209,15 @@ impl GameTime {
     /// 
     /// This function returns a `Duration`. If you require
     /// an `f32`, use the `runtimes` function.
+    ///
+    /// ## Example usage
+    ///
+    /// ```rust
+    /// println!(
+    ///     "Game has been running for {}s",
+    ///     w.time.runtimes().as_secs_f64()
+    /// );
+    /// ```
     pub fn runtime(&self) -> Duration {
         Instant::now() - self.startup
     }
@@ -171,6 +227,15 @@ impl GameTime {
     /// 
     /// This function returns an `f32`. If you require a
     /// `Duration`, use the `runtime` function.
+    ///
+    /// ## Example usage
+    ///
+    /// ```rust
+    /// println!(
+    ///     "Game has been running for {}s",
+    ///     w.time.runtimes()
+    /// );
+    /// ```
     pub fn runtimes(&self) -> f32 {
         self.runtime().as_secs_f32()
     }

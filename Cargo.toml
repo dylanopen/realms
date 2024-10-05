@@ -1,6 +1,6 @@
 [package]
 name = "realms"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 authors = ["Dylan Rogers <opendylan@proton.me>"]
 description = "A powerful and lightweight graphics library for making Rust games"
