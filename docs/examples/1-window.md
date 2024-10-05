@@ -19,5 +19,5 @@ fn main()
 
 ## Output
 
-![An 800x600 window with title "Welcome to Realms" and filled with a purple background](../res/purple_window.png)
+![An 800x450 window with title "Welcome to Realms" and filled with a purple background](../res/purple_window.png)
 

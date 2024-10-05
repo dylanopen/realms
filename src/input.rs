@@ -1,4 +1,4 @@
-//! This module contains functions for checking user input.
+//! This module contains functions for checking user input.  
 //! It can be used to check pressed keys, the mouse
 //! position, pressed mouse buttons, and other input
 //! functionality.

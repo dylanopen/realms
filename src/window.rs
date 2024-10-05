@@ -31,7 +31,7 @@ pub struct Window {
 
 impl Window {
     /// Create a window with the specified `title`,
-    /// `width` and `height`.
+    /// `width` and `height`.  
     /// Also creates a frame buffer with the
     /// dimensions specified.
     pub fn new(title: &str, width: usize, height: usize) -> Window {
@@ -59,6 +59,7 @@ impl Window {
     ///   - Whether you have manually closed the window by
     ///     setting the 'running' field to false.
     ///   - Whether the user closed the window.
+    ///
     /// If the window was closed in any of these ways, this
     /// function will return `false`, otherwise `true`.
     pub fn is_running(&self) -> bool {
@@ -67,11 +68,13 @@ impl Window {
 
     /// Modify the frame buffer by setting a pixel to the
     /// specified color.
+    ///
     /// If the specified color *is not* opaque (i.e. its
     /// alpha field is less than 255), it's color will be
-    /// 'added' to the previous color using the `add_layer`
-    /// method. This allows for a simple way of handling
-    /// transparency.
+    /// 'added' to the previous color using the
+    /// `Color::add_layer` method. This allows for a simple
+    /// way of handling transparency.
+    ///
     /// If the specified color *is* opaque, it simply sets
     /// the pixel in the frame buffer to the specified
     /// color.
@@ -106,8 +109,8 @@ impl Window {
         self.mini_window.set_target_fps(target_fps);
     }
 
-    /// Manually close the window.
-    /// This sets the `running` field to `false`.
+    /// Manually close the window.  
+    /// This sets the `running` field to `false`.  
     /// `is_running()` will return `false` after this method
     /// is called.
     pub fn close(&mut self) {
@@ -115,12 +118,14 @@ impl Window {
     }
 
     /// Get the width of the window as a `usize`.
+    ///
     /// This function simply returns `self.width`.
     pub fn get_width(&self) -> usize {
         self.width
     }
 
     /// Get the height of the window as a `usize`.
+    ///
     /// This function simply returns `self.height`.
     pub fn get_height(&self) -> usize {
         self.height
@@ -130,11 +135,12 @@ impl Window {
     /// to a Vec of `u32`s.
     ///
     /// The input is `self.buffer`.
+    ///
     /// It is used because `minifb` requires the pixel color
     /// data to be specified as a `u32` - a hexadecimal of
     /// the red, green and blue components of the color.
     ///
-    /// > Note: This method is not designed for use outsize
+    /// > Note: This method is not designed for use outside
     /// of the Window struct, and is therefore private.
     fn buffer_u32(&self) -> Vec<u32> {
         let mut buf: Vec<u32> = Vec::new();

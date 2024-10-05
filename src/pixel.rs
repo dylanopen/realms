@@ -5,10 +5,27 @@ use crate::{Color, NodeColor, NodeDraw, NodePosition, NodeSize, Window};
 
 /// The `Pixel` struct stores information about a single
 /// pixel.
+///
 /// This node has a:
 ///   - Position
 ///   - Size (constant)
 ///   - Color
+///
+/// ## Example usage
+///
+/// Set the pixel at position `(32, 32)` to `green`.
+///
+/// ``` rust
+/// let mut w = Window::new("pixels", 100, 100);
+/// let pixel = Pixel::new(
+///     (32.0, 32.0),
+///     Color::rgb(31, 255, 31)
+/// );
+/// while w.is_running() {
+///     w.new_frame();
+///     pixel.draw(&mut w);
+/// }
+/// ```
 pub struct Pixel {
     pos: (f32, f32),
     color: Color,
@@ -16,8 +33,20 @@ pub struct Pixel {
 
 impl Pixel {
     /// Create a new rectangle with the specified `pos`,
-    /// and `color`.
+    /// and `color`.  
     /// The size of a pixel is always (1.0, 1.0).
+    ///
+    /// ## Example usage
+    ///
+    /// Set the pixel (50, 30) to a semi-transparent blue.  
+    /// Note: draw call is omitted.
+    ///
+    /// ``` rust
+    /// let pixel = Pixel::new(
+    ///     (50.0, 30.0),
+    ///     Color::rgba(31, 127, 255, 127)
+    /// );
+    /// ```
     pub fn new(pos: (f32, f32), color: Color) -> Pixel {
         Pixel {
             pos,

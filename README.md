@@ -6,6 +6,13 @@ This is a 'mid-level' crate which provides an extremely simple API to easily
 draw to a graphical window, without being bloated like a typical game *engine*.
 Realms is a **game library**.
 
+## Book
+
+The best way to get started is to read the Realms book:
+[https://github.com/dylanopen/realms/tree/main/docs/book.md]
+
+Alternatively, below is a basic guide to getting started with Realms.
+
 ## Getting started
 
 First, create a new project with `cargo new <project_name>`.
@@ -56,20 +63,22 @@ fn main()
 
 Running this code using `cargo run` will give you this result:
 
-![An 800x600 window with title "Welcome to Realms" and filled with a purple background](docs/res/purple_window.png)
+![An 800x450 window with title "Welcome to Realms" and filled with a purple background](docs/res/purple_window.png)
 
 Congratulations! You have successfully written your first Realms game :\)
 
-> Note: For more info, please see the full explanation at [github.com/dylanopen/realms](https://github.com/dylanopen/realms/tree/main/docs/examples/1-window.md)
+> Note: For more info, please see the full explanation in the book at
+[github.com/dylanopen/realms](https://github.com/dylanopen/realms/tree/main/docs/book.md)
 
 ## Documentation
 
 The above example is just a very brief introduction to the Realms library.
 
-Please view [the documentation on GitHub](https://github.com/dylanopen/realms/tree/master/docs)
-for more info.  
-There is also some information available at [docs.rs](https://docs.rs/realms),
-although documentation there is limited.
+**The best way to learn the Realms library is to**
+[**read the book**](https://github.com/dylanopen/realms/tree/master/docs/book.md).
+
+For documentation on specific fields, structs and functions, see the
+documentation on [docs.rs](https://docs.rs/realms).
 
 Thanks for choosing Realms to build your next great game!
 

@@ -1,5 +1,5 @@
 //! This module contains the traits implemented by nodes.
-//! They define the structure and methods of nodes.
+//! They define the structure and methods of nodes.  
 //! This module does not *implement* any functionality, but
 //! instead simply defines the methods of each node struct.
 
@@ -23,7 +23,7 @@ pub trait NodePosition {
     fn change_pos(&mut self, delta_pos: (f32, f32));
 }
 
-/// This trait is used for nodes with a display size.
+/// This trait is used for nodes with a display size.  
 /// It specifies the dimensions of a node on the buffer.
 pub trait NodeSize {
 
@@ -47,27 +47,35 @@ pub trait NodeSize {
     fn change_size(&mut self, delta_size: (f32, f32));
 }
 
+/// This trait is used for nodes that have a color.
+/// It specifies the draw color.
 pub trait NodeColor {
 
     /// Returns an immutable reference to the `Color` of
     /// the node.
     ///
     /// If you need a mutable reference (i.e. to modify the
-    /// color), use `get_color_mut`.
+    /// color), use `get_color_mut`.  
     /// To set the value of the color, use `set_color`.
     fn get_color(&self) -> &Color;
 
-
+    /// Returns a mutable reference to the `Color` of the
+    /// node.
     fn get_color_mut(&mut self) -> &mut Color;
 
-
+    /// Replaces the node's color with the color stored in
+    /// `new_color`.
     fn set_color(&mut self, new_color: Color);
 }
 
+/// This trait is used for all nodes that can be displayed
+/// (any nodes that have a draw() function).  
+/// It provides the `draw()` method.
 pub trait NodeDraw {
     
     /// Writes the node to the frame buffer (displays it on
     /// the screen).
+    ///
     /// This method should be called each frame in order
     /// for it to be visible.
     fn draw(&self, window: &mut Window);

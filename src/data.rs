@@ -1,5 +1,5 @@
 //! This module contains structs, datatypes and information
-//! used by Realms.
+//! used by Realms to store information.  
 //! The structs in this module do not fit into another
 //! module, but are too atomic to have their own module.
 
@@ -7,10 +7,10 @@
 use std::time::{Duration, Instant};
 
 /// `Color` is a simple struct to store 4 `u8`s:
-///   - `r` = the **red** channel for the color
-///   - `g` = the **green** channel for the color
-///   - `b` = the **blue** channel for the color
-///   - `a` = the **alpha** channel for the color
+///   - `r` = the **red** channel/component for the color
+///   - `g` = the **green** channel/component for the color
+///   - `b` = the **blue** channel/component for the color
+///   - `a` = the **alpha** channel/component for the color
 ///
 /// To construct a color, use one of these functions:
 ///   - `Color::rgba`
@@ -36,7 +36,7 @@ impl Color {
     pub const BLACK: Color = Color { r: 0, g: 0, b: 0, a: 255 };
 
     /// Construct a `Color` object from the specified red,
-    /// green, blue and alpha (opacity) components.
+    /// green, blue and alpha (opacity) components.  
     /// These components should be specified as a u8 value
     /// (between 0-255).
     pub fn rgba(r: u8, g: u8, b: u8, a: u8) -> Color {
@@ -44,9 +44,10 @@ impl Color {
     }
     
     /// Construct a `Color` object from the specified red,
-    /// green and blue components.
+    /// green and blue components.  
     /// These components should be specified as a u8 value
     /// (between 0-255).
+    ///
     /// Alpha (`a`) is assumed to be `255` (fully opaque).
     pub fn rgb(r: u8, g: u8, b: u8) -> Color {
         Color::rgba(r, g, b, 255)
@@ -54,6 +55,7 @@ impl Color {
 
     /// Construct a new Color object with the color value
     /// `black`.
+    ///
     /// Shorthand for `Color::rgb(0, 0, 0)`.
     pub fn new() -> Color {
         Color::rgba(0, 0, 0, 255)
@@ -62,9 +64,11 @@ impl Color {
     /// This function mutates `self` to represent the color
     /// result if the `other` color was 'added on top of'
     /// the existing `self` color.
+    ///
     /// If `other` is opaque, `self` becomes `other` (in
     /// other words, the object is set to the value of
     /// `other`).
+    ///
     /// If `other` is *not* opaque, `self` is set to the
     /// original value of self, but blended with `other`.
     /// The weight of each color (how much it affects the
@@ -74,6 +78,7 @@ impl Color {
     /// similar to the original `self`. If `other`'s alpha
     /// channel is higher (more opaque), the result will be
     /// more similar to `other`.
+    ///
     /// TODO: Make this documentation more understandable!
     pub fn add_layer(&mut self, other: Color) {
         if other.a == 255 {
@@ -88,7 +93,7 @@ impl Color {
 }
 
 /// `GameTime` is used to handle storing and updating the
-/// elapsed window time.
+/// elapsed window time.  
 /// It can be used to get the application runtime, the
 /// time since the last frame (delta time), the framerate
 /// (FPS), etc.
@@ -136,14 +141,14 @@ impl GameTime {
     /// seconds as an `f32`.
     ///
     /// This is the time between the last two calls of
-    /// [`self.new_frame`](GameTime::new_frame) (a method called automatically by
-    /// [`crate::Window::new_frame`]).
+    /// `self.new_frame` (a method called automatically by
+    /// `Window::new_frame`).
     pub fn delta(&self) -> f32 {
         self.delta.as_secs_f32()
     }
 
     /// Get the framerate (frames/second) of the window as
-    /// an `f32`.
+    /// an `f32`.  
     /// This FPS value is calculated based on the delta
     /// time, so changes each frame. 
     ///
@@ -152,20 +157,20 @@ impl GameTime {
         1.0 / self.delta.as_secs_f32()
     }
 
-    /// Returns the elapsed time since the [`GameTime`]
-    /// object was created (on [`Window`] creation).
+    /// Returns the elapsed time since the `GameTime`
+    /// object was created (on `Window` creation).
     /// 
-    /// This function returns a [`Duration`]. If you require
-    /// an `f32`, use the [`runtimes`](GameTime::runtimes) function.
+    /// This function returns a `Duration`. If you require
+    /// an `f32`, use the `runtimes` function.
     pub fn runtime(&self) -> Duration {
         Instant::now() - self.startup
     }
 
-    /// Returns the elapsed time since the [`GameTime`]
-    /// object was created (on [`Window`] creation).
+    /// Returns the elapsed time since the `GameTime`
+    /// object was created (on `Window` creation).
     /// 
     /// This function returns an `f32`. If you require a
-    /// `Duration`, use the [`runtime`](GameTime::runtime) function.
+    /// `Duration`, use the `runtime` function.
     pub fn runtimes(&self) -> f32 {
         self.runtime().as_secs_f32()
     }

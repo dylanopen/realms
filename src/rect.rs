@@ -5,10 +5,27 @@ use crate::{Color, NodeColor, NodeDraw, NodePosition, NodeSize, Window};
 
 /// The `Rect` struct stores information about a rectangle
 /// node.
+///
 /// This node has a:
 ///   - Position
 ///   - Size
 ///   - Color
+///
+/// ## Example usage
+///
+/// Create a white square and draw it to the screen.
+///
+/// ``` rust
+/// let mut w = Window::new("rectangle", 800, 600);
+/// let rect = Rect::new(
+///     (64.0, 64.0), (32.0, 32.0),
+///     Color::rgb(255, 255, 255)
+/// );
+/// while w.is_running() {
+///     w.new_frame()
+///     rect.draw(&mut w);
+/// }
+/// ```
 pub struct Rect {
     pos: (f32, f32),
     size: (f32, f32),
@@ -18,6 +35,20 @@ pub struct Rect {
 impl Rect {
     /// Create a new rectangle with the specified `pos`,
     /// `size` and `color`.
+    ///
+    /// ## Example usage
+    ///
+    /// A `cyan` rectangle at position `(100, 100)` and
+    /// size `(50, 50)`.  
+    /// Note: draw call is omitted.
+    ///
+    /// ``` rust
+    /// let rect = Rect::new(
+    ///     (100.0, 100.0),
+    ///     (50.0, 50.0),
+    ///     Color::rgb(0, 255, 255)
+    /// );
+    /// ```
     pub fn new(pos: (f32, f32), size: (f32, f32), color: Color) -> Rect {
         Rect {
             pos, size, color
@@ -25,9 +56,21 @@ impl Rect {
     }
 
     /// Create a rectangle with the specified `color` that
-    /// fills the entire screen.
+    /// fills the entire screen.  
     /// This means the position is (0.0, 0.0) and the size
     /// is the window size.
+    ///
+    /// ## Example usage
+    ///
+    /// Fill the screen `orange`.  
+    /// Note: draw call is omitted.
+    ///
+    /// ``` rust
+    /// let fill = Rect::fill(
+    ///     &w, // need to pass in window for size field
+    ///     Color::rgb(255, 127, 0)
+    /// );
+    /// ```
     pub fn fill(window: &Window, color: Color) -> Rect {
         let size = (window.get_width() as f32, window.get_height() as f32);
         Rect {
