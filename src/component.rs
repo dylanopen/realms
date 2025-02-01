@@ -5,6 +5,7 @@ use crate::Color;
 ///
 /// It is commonly used for coordinates (positions) and
 /// dimensions (sizes).
+#[derive(Clone)]
 pub struct Vec2f {
     pub x: f32,
     pub y: f32,
@@ -101,6 +102,7 @@ impl Vec2f {
 /// > set to `nearest`. This results in low-res images
 /// > being pixelated. This is useful for pixel art, but
 /// > may not be what you want.
+#[derive(Clone)]
 pub struct Texture {
     pub width: usize,
     pub height: usize,
@@ -116,7 +118,7 @@ impl Texture {
     /// **supports** transparency using alpha channels.
     pub fn load(path: &str, width: usize, height: usize) -> Texture {
         let mut ril_image = ril::Image::<ril::Rgba>::open(path)
-            .expect(&format!("Failed to load image {}", path));
+            .unwrap_or_else(|_| panic!("Failed to load image, path = {}", path));
         ril_image.resize(
             width as u32, height as u32,
             ril::ResizeAlgorithm::Nearest
@@ -128,7 +130,7 @@ impl Texture {
             for x in 0..width {
                 let ril_pixel = ril_image
                     .get_pixel(x as u32, y as u32)
-                    .expect(&format!("Failed to get pixel of ril::Image {}", path));
+                    .unwrap_or_else(|| panic!("Failed to get pixel of ril::Image, path = {}", path));
                 let pixel = Color::rgba(ril_pixel.r, ril_pixel.g, ril_pixel.b, ril_pixel.a);
                 pixels.push(pixel);
             }
@@ -147,10 +149,8 @@ impl Texture {
     /// This function will PANIC if the requested pixel is
     /// out of bounds (not within the image's dimensions).
     pub fn get(&self, x: usize, y: usize) -> &Color {
-        self.pixels.get(y * self.width + x).expect(&format!(
-            "Could not get pixel x={}, y={} of texture (likely out of bounds)",
-            x, y
-        ))
+        self.pixels.get(y * self.width + x)
+            .unwrap_or_else(|| panic!("Could not get pixel x={}, y={} of texture (likely out of bounds)", x, y))
     }
 }
 
