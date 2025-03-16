@@ -1,0 +1,7 @@
+[package]
+name = "example3_colorful_triangle"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+realms = "1.2.1"
