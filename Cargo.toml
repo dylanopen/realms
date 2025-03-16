@@ -3,6 +3,8 @@ name = "realms"
 version = "1.0.0"
 edition = "2024"
 license = "MIT"
+keywords = ["gamedev", "graphics", "game", "engine", "opengl"]
+categories = ["game-development", "game-engines", "graphics", "rendering", "rendering::engine"]
 
 [lib]
 doctest = false
