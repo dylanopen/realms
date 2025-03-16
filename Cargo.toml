@@ -3,6 +3,9 @@ name = "realms"
 version = "1.0.0"
 edition = "2024"
 
+[lib]
+doctest = false
+
 [dependencies]
 gl = "0.14.0"
 glfw = "0.59.0"
