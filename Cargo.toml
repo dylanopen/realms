@@ -1,10 +1,10 @@
 [package]
 name = "realms"
+version = "1.1.1"
 description = "A powerful and lightweight graphics library for making Rust games"
 homepage = "https://github.com/dylanopen/realms"
 repository = "https://github.com/dylanopen/realms"
 readme = "README.md"
-version = "1.0.0"
 edition = "2024"
 license = "MIT"
 keywords = ["gamedev", "graphics", "game", "engine", "opengl"]
