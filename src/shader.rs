@@ -76,6 +76,8 @@ pub struct ShaderProgram {
 }
 
 impl ShaderProgram {
+    pub const NONE: ShaderProgram = ShaderProgram { gl_id: 0 }; 
+
     /// Load and compile an opengl shader **program** from the given `Vec` of
     /// `Shader`s;
     ///
