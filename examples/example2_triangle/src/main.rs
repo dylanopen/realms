@@ -44,7 +44,7 @@ fn main() {
         0, // offset is 0 as this is the first attrib: no previous attribs.
     );
 
-    // loop until the user closes the window or the 'Q' key is pressed
+    // loop until the user closes the window
     while window.is_running() {
         // swap the buffers (draw to the screen) and bind our shader program:
         window.new_frame(&shader_program);
