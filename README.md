@@ -17,5 +17,18 @@ documentation on [docs.rs](https://docs.rs/realms).
 You can find a list of examples for how to use Realms at
 [github.com/dylanopen/realms/tree/main/examples](https://github.com/dylanopen/realms/tree/main/examples)
 
-Thanks for choosing Realms to build your next great game!
+## Useful resources
 
+Realms is based on OpenGL. For this reason, it is very helpful to have at
+least some knowledge of the basics of OpenGL; in particular with vertex
+buffers (VAOs, VBOs and EBOs/IBOs) and shaders in the GLSL programming language.
+
+Below is a list of useful resources for learning OpenGL, the Realms library
+APIs and game development in general:
+
+- [Realms examples](https://github.com/dylanopen/realms/tree/main/examples)
+- [Realms documentation (docs.rs)](https://docs.rs/realms)
+- [LearnOpenGL](https://learnopengl.com)
+- [The Book of Shaders](https://thebookofshaders.com/)
+
+Thanks for choosing Realms to build your next great game!
