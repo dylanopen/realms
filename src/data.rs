@@ -1,20 +1,29 @@
-#[derive(Clone)]
+//! The `data` module stores structs and functions that are too small to be
+//! their own module, such as the `Color` and `GameTime` struct.
+
+/// The `Color` struct is used to represent an RGBA color.
+/// It stores the red, green, blue and alpha components as a 
+#[derive(Clone, Copy)]
+#[expect(clippy::min_ident_chars, reason = "r, g, b and a are widely used abbreviations for red, green, blue and alpha")]
+#[expect(clippy::exhaustive_structs, reason = "colors will only ever be made up of red, green, blue and alpha, so this struct is exhaustive")]
 pub struct Color {
 
-    // The `red` component
+    /// The `red` component
     pub r: u8,
 
-    // The `green` component
+    /// The `green` component
     pub g: u8,
 
-    // The `blue` component
+    /// The `blue` component
     pub b: u8,
 
-    // The `alpha` (opacity) component
+    /// The `alpha` (opacity) component
     pub a: u8,
 }
 
 impl Color {
+    
+    /// A const for representing the color black: 
     pub const BLACK: Color = Color { r: 0, g: 0, b: 0, a: 255 };
 
     /// Construct a `Color` object from the specified red,
@@ -29,7 +38,10 @@ impl Color {
     /// let white = Color::rgba(255, 255, 255, 255);
     /// let translucent_blue = Color::rgba(31, 127, 255, 100);
     /// ```
-    pub fn rgba(r: u8, g: u8, b: u8, a: u8) -> Color {
+    #[expect(clippy::min_ident_chars, reason = "r, g, b and a are widely used abbreviations")]
+    #[inline]
+    #[must_use]
+    pub const fn rgba(r: u8, g: u8, b: u8, a: u8) -> Color {
         Color { r, g, b, a }
     }
 
@@ -48,7 +60,10 @@ impl Color {
     /// let blue = Color::rgb(0, 0, 255);
     /// let yellow = Color::rgb(255, 255, 0);
     /// ```
-    pub fn rgb(r: u8, g: u8, b: u8) -> Color {
+    #[inline]
+    #[must_use]
+    #[expect(clippy::min_ident_chars, reason = "r,g,b,a is universally abbreviated")]
+    pub const fn rgb(r: u8, g: u8, b: u8) -> Color {
         Color::rgba(r, g, b, 255)
     }
 
@@ -62,10 +77,17 @@ impl Color {
     /// ``` rust
     /// let black = Color::new();
     /// ```
-    pub fn new() -> Color {
+    #[inline]
+    #[must_use]
+    pub const fn new() -> Color {
         Color::rgba(0, 0, 0, 255)
     }
 
+    /// NOTE: While this function was used all the time in the
+    /// old framebuffer-based Realms library, it is rarely used
+    /// now that Realms uses opengl. You are welcome to use it,
+    /// however it will rarely be updated and may be unstable.
+    ///
     /// This function mutates `self` to represent the color
     /// result if the `other` color was 'added on top of'
     /// the existing `self` color.
@@ -83,24 +105,41 @@ impl Color {
     /// similar to the original `self`. If `other`'s alpha
     /// channel is higher (more opaque), the result will be
     /// more similar to `other`.
-    ///
-    /// TODO: Make this documentation more understandable!
+    #[deprecated(since = "0.2.1", note = "no longer needed now that Realms uses opengl")]
+    #[inline]
+    #[expect(clippy::float_arithmetic, reason = "we need float arithmetic for calculating the alpha values")]
+    #[expect(clippy::as_conversions, reason = "while `as` can crash, given the inputs, it is unlikely to; `as` is also necessary here")]
+    #[expect(clippy::suboptimal_flops, reason = "add_layer function no longer maintained")]
+    #[expect(clippy::cast_possible_truncation, reason = "no other feasible way to convert f64->u8 (other than `as`)")]
+    #[expect(clippy::cast_sign_loss, reason = "no other feasible way to convert f64->u8 (other than `as`)")]
     pub fn add_layer(&mut self, other: Color) {
         if other.a == 255 {
-            *self = other.clone();
+            *self = other;
         }
-        let other_alpha = other.a as f64 / 255.0;
-        let old_alpha = 1.0 - other_alpha;
-        self.r = (self.r as f64 * old_alpha + other.r as f64 * other_alpha) as u8;
-        self.g = (self.g as f64 * old_alpha + other.g as f64 * other_alpha) as u8;
-        self.b = (self.b as f64 * old_alpha + other.b as f64 * other_alpha) as u8;
+        let other_alpha = f64::from(other.a) / 255.0f64;
+        let old_alpha = 1.0f64 - other_alpha;
+        self.r = (f64::from(self.r) * old_alpha + f64::from(other.r) * other_alpha) as u8;
+        self.g = (f64::from(self.g) * old_alpha + f64::from(other.g) * other_alpha) as u8;
+        self.b = (f64::from(self.b) * old_alpha + f64::from(other.b) * other_alpha) as u8;
     }
 
+    /// Convert a Realms `Color` into a tuple of 4 float32s, for use by opengl
+    /// and (optionally) custom shaders and `VertexBuffer`s.
+    #[expect(clippy::float_arithmetic, reason = "we need float arithmetic for calculating the opengl-style color value")]
+    #[inline]
+    #[must_use]
     pub fn gl(&self) -> (f32, f32, f32, f32) {
-        ( self.r as f32 / 255.0,
-          self.g as f32 / 255.0,
-          self.b as f32 / 255.0,
-          self.a as f32 / 255.0, )
+        ( f32::from(self.r) / 255.0,
+          f32::from(self.g) / 255.0,
+          f32::from(self.b) / 255.0,
+          f32::from(self.a) / 255.0, )
+    }
+}
+
+impl Default for Color {
+    #[inline]
+    fn default() -> Self {
+        Color::rgba(0, 0, 0, 255)
     }
 }
 
