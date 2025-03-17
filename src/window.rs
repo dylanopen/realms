@@ -1,13 +1,23 @@
-use glfw::Context;
+//! The `window` module contains structs and functions for interacting with
+//! a `glfw::PWindow`.
+//!
+//! In short, it is used as a wrapper around a GLFW window; it provides
+//! many abstractions which make it easier to create windows, bind opengl
+//! instances and handle window events.
+//!
+//! The main struct is `Window`.
+
+use glfw::Context as _;
 
 use super::data::Color;
 use super::input::Event;
 use super::shader::ShaderProgram;
 
 /// The main struct for creating and interacting with Realms windows.
+///
 /// The backend for window handling was moved from `minifb` to `glfw` in
 /// version 1.0.0!
-/// The Window stores the GLFW instance, the glfw::PWindow used, glfw events
+/// The Window stores the GLFW instance, the `glfw::PWindow` used, glfw events
 /// as well as a Vec of the Events for this frame.
 /// To get the events for the current frame, use `window.events`.
 ///
@@ -33,11 +43,13 @@ pub struct Window {
 impl Window {
     /// Create a new instance of the `Window` struct with the specified
     /// `width`, `height` and `title`.
-    /// This method creates a glfw PWindow with some sane defaults. 
+    /// This method creates a glfw `PWindow` with some sane defaults. 
+    ///
+    /// ## Errors
     ///
     /// On systems without glfw installed, this function may fail. Therefore,
     /// a Result<Window, String> is returned. It is recommended that you match
-    /// the result of Window::new to provide fallback behaviour, but you should
+    /// the result of `Window::new` to provide fallback behaviour, but you should
     /// at least use `.expect` to provide a meaningful error message.
     ///
     /// ## Example usage:
@@ -45,23 +57,26 @@ impl Window {
     /// ``` rust
     /// let w = Window::new(800, 600, "Hello Realms!");
     /// ```
+    #[inline]
     pub fn new(width: u32, height: u32, title: &str) -> Result<Window, String> {
         use glfw::fail_on_errors;
+        #[expect(clippy::question_mark_used, reason = "? makes this code more concise and does exactly the same as a match statement would")]
         let mut glfw = glfw::init(fail_on_errors!())
-            .map_err(|err| format!("Realms: failed to initialise glfw: {}", err))?;
+            .map_err(|err| format!("Realms: failed to initialise glfw: {err}"))?;
 
         glfw.window_hint(glfw::WindowHint::ContextVersion(3, 3));
         glfw.window_hint(glfw::WindowHint::OpenGlProfile(glfw::OpenGlProfileHint::Core));
         #[cfg(target_os = "macos")]
         glfw.window_hint(glfw::WindowHint::OpenGlForwardCompat(true));
 
+        #[expect(clippy::question_mark_used, reason = "? makes this code more concise and does exactly the same as a match statement would")]
         let (mut glfw_window, glfw_events) = glfw.create_window(width, height, title, glfw::WindowMode::Windowed)
-            .ok_or(&format!("Realms: failed to create glfw window"))?;
+            .ok_or("Realms: failed to create glfw window")?;
 
         glfw_window.make_current();
         glfw_window.set_all_polling(true);
 
-        gl::load_with(|symbol| glfw_window.get_proc_address(symbol) as *const _);
+        gl::load_with(|symbol| glfw_window.get_proc_address(symbol).cast());
 
         Ok(Window {
             glfw,
@@ -85,6 +100,8 @@ impl Window {
     ///     ...
     /// }
     /// ```
+    #[inline]
+    #[must_use]
     pub fn is_running(&self) -> bool {
         !self.glfw_window.should_close()
     }
@@ -108,6 +125,7 @@ impl Window {
     ///     }
     /// }
     /// ```
+    #[inline]
     pub fn close(&mut self) {
         self.glfw_window.set_should_close(true);
     }
@@ -128,6 +146,7 @@ impl Window {
     ///     for event in w.events() {...}
     /// }
     /// ```
+    #[inline]
     pub fn new_frame(&mut self, shader_program: &ShaderProgram) {
         self.glfw_window.swap_buffers();
         shader_program.new_frame();
@@ -140,12 +159,13 @@ impl Window {
     ///
     /// > Technical note: The `Color` is converted to a 4-float opengl color
     /// > using the `color.gl()` function.
+    #[inline]
+    #[expect(clippy::min_ident_chars, reason = "r, g, b, a is short for red, green, blue, alpha")]
+    #[expect(clippy::needless_pass_by_value, reason = "change to reference on next breaking release")]
     pub fn fill(&mut self, color: Color) {
         let (r, g, b, a) = color.gl();
-        unsafe {
-            gl::ClearColor(r, g, b, a);
-            gl::Clear(gl::COLOR_BUFFER_BIT);
-        }
+        unsafe { gl::ClearColor(r, g, b, a) };
+        unsafe { gl::Clear(gl::COLOR_BUFFER_BIT) };
     }
 
     /// Returns a `Vec` of `Event`s gathered this frame. You should loop over
@@ -167,6 +187,7 @@ impl Window {
     ///     }
     /// }
     /// ```
+    #[inline]
     pub fn events(&mut self) -> Vec<Event> {
         let mut events = Vec::new();
         self.glfw.poll_events();
@@ -175,7 +196,7 @@ impl Window {
             events.push(event);
         }
         for event in &events {
-            self.handle_event(&event);
+            self.handle_event(event);
         }
         events
     }
@@ -186,10 +207,15 @@ impl Window {
     ///
     /// - Its only current job is to resize the OpenGL viewport if the window is
     ///   resized.
+    #[inline]
+    #[expect(clippy::unused_self, reason = "will be used in the future")]
+    #[expect(clippy::needless_pass_by_ref_mut, reason = "will need to be mutable in the future")]
     fn handle_event(&mut self, event: &Event) {
-        match event {
+        #[expect(clippy::single_match, reason = "more events will be handled in the future")]
+            #[expect(clippy::wildcard_enum_match_arm, reason = "future added variants should be ignored anyway")]
+        match *event {
             Event::ResizeWindow(width, height)
-                => unsafe { gl::Viewport(0, 0, *width, *height) },
+                => unsafe { gl::Viewport(0, 0, width, height) },
             _ => {},
         };
     }
