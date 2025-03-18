@@ -9,7 +9,7 @@ edition = "2024"
 license = "MIT"
 keywords = ["gamedev", "graphics", "game", "engine", "opengl"]
 categories = ["game-development", "game-engines", "graphics", "rendering", "rendering::engine"]
-excludes = ["examples"]
+# excludes = ["examples"]
 
 [lib]
 doctest = false
@@ -18,18 +18,4 @@ doctest = false
 gl = "0.14.0"
 glfw = "0.59.0"
 image = "0.19.0"
-
-[lints.clippy]
-cargo = { priority = -1, level = "warn" }
-complexity = { priority = -1, level = "warn" }
-correctness = { priority = -1, level = "warn" }
-nursery = { priority = -1, level = "warn" }
-pedantic = { priority = -1, level = "warn" }
-perf = { priority = -1, level = "warn" }
-restriction = { priority = -1, level = "warn" }
-style = { priority = -1, level = "warn" }
-suspicious = { priority = -1, level = "warn" }
-
-blanket_clippy_restriction_lints = "allow"
-implicit_return = "allow"
 
