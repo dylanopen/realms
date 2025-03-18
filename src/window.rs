@@ -161,7 +161,6 @@ impl Window {
     /// > using the `color.gl()` function.
     #[inline]
     #[expect(clippy::min_ident_chars, reason = "r, g, b, a is short for red, green, blue, alpha")]
-    #[expect(clippy::needless_pass_by_value, reason = "change to reference on next breaking release")]
     pub fn fill(&mut self, color: Color) {
         let (r, g, b, a) = color.gl();
         unsafe { gl::ClearColor(r, g, b, a) };

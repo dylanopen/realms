@@ -1,7 +1,7 @@
 use std::ffi::c_void;
 use std::ptr;
 
-use gl::types::{GLfloat, GLsizei, GLsizeiptr, GLuint};
+use gl::types::{GLfloat, GLsizei, GLuint};
 
 /// A `VertexBuffer` is a wrapper around an opengl VAO, VBO and EBO.
 /// It is essentially a list of vertices (positions, colors, textures, etc.)
@@ -74,12 +74,12 @@ impl VertexBuffer {
             gl::BindVertexArray(vao_id);
             gl::BindBuffer(gl::ARRAY_BUFFER, vbo_id);
             gl::BufferData(gl::ARRAY_BUFFER,
-                (vertices.len() * std::mem::size_of::<GLfloat>()) as GLsizeiptr,
+                std::mem::size_of_val(vertices).try_into().unwrap(),
                 &vertices[0] as *const f32 as *const c_void,
                 gl::STATIC_DRAW);
             gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ebo_id);
             gl::BufferData(gl::ELEMENT_ARRAY_BUFFER,
-                (elements.len() * std::mem::size_of::<GLuint>()) as GLsizeiptr,
+                std::mem::size_of_val(elements).try_into().unwrap(),
                 &elements[0] as *const GLuint /*or u32*/ as *const c_void,
                 gl::STATIC_DRAW);
         };
