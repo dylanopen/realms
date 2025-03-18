@@ -1,3 +1,8 @@
+//! The `texture` module stores structs for interacting with image files
+//! and loading them as opengl textures.
+//!
+//! The main struct is the `Texture` struct.
+
 use std::ffi::c_void;
 use std::path::Path;
 
