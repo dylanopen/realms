@@ -18,6 +18,9 @@
 // or PR explaining why it should be removed.
 
 #![warn(clippy::absolute_paths)]
+#![warn(clippy::allow_attributes)]
+#![warn(clippy::allow_attributes_without_reason)]
+
 
 pub mod window;
 pub mod input;
