@@ -1,15 +1,15 @@
 [package]
 name = "realms"
-version = "1.2.1"
+version = "1.2.2"
 description = "A powerful and lightweight graphics library for making Rust games"
 homepage = "https://github.com/dylanopen/realms"
 repository = "https://github.com/dylanopen/realms"
+documentation = "https://docs.rs/realms"
 readme = "README.md"
 edition = "2024"
 license = "MIT"
 keywords = ["gamedev", "graphics", "game", "engine", "opengl"]
 categories = ["game-development", "game-engines", "graphics", "rendering", "rendering::engine"]
-# excludes = ["examples"]
 
 [lib]
 doctest = false
