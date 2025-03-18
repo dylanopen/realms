@@ -1,3 +1,13 @@
+//! The `vertex` module stores structs and methods to interact with
+//! `VertexBuffer`s: a way of interacting with opengl's VAOs, VBOs and
+//! EBOs but in a simpler and safer way.
+//!
+//! This module does *not* contain struct for the individual vertex data,
+//! such as storing positions and colors. It is left up to the user of
+//! the library to specify an array of vertex data in whichever form
+//! works best for your program: Realms does not thrust a certain method
+//! of vertex data storage upon users.
+
 use std::ffi::c_void;
 use std::ptr;
 
