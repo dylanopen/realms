@@ -9,7 +9,7 @@
 //! of vertex data storage upon users.
 
 use std::ffi::c_void;
-use std::ptr;
+use std::{mem, ptr};
 
 use gl::types::{GLfloat, GLsizei, GLuint};
 
@@ -84,12 +84,12 @@ impl VertexBuffer {
             gl::BindVertexArray(vao_id);
             gl::BindBuffer(gl::ARRAY_BUFFER, vbo_id);
             gl::BufferData(gl::ARRAY_BUFFER,
-                std::mem::size_of_val(vertices).try_into().unwrap(),
+                mem::size_of_val(vertices).try_into().unwrap(),
                 &vertices[0] as *const f32 as *const c_void,
                 gl::STATIC_DRAW);
             gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ebo_id);
             gl::BufferData(gl::ELEMENT_ARRAY_BUFFER,
-                std::mem::size_of_val(elements).try_into().unwrap(),
+                mem::size_of_val(elements).try_into().unwrap(),
                 &elements[0] as *const GLuint /*or u32*/ as *const c_void,
                 gl::STATIC_DRAW);
         };
@@ -123,10 +123,10 @@ impl VertexBuffer {
     /// ```
     pub fn add_attrib(&self, layout: u32, component_count: i32, stride: i32, offset: usize) {
         unsafe {
-            let offset_ptr = (offset * std::mem::size_of::<GLfloat>()) as *const c_void;
+            let offset_ptr = (offset * mem::size_of::<GLfloat>()) as *const c_void;
             gl::VertexAttribPointer(
                 layout, component_count, gl::FLOAT, gl::FALSE,
-                stride * std::mem::size_of::<GLfloat>() as GLsizei,
+                stride * mem::size_of::<GLfloat>() as GLsizei,
                 offset_ptr
             );
             gl::EnableVertexAttribArray(layout);

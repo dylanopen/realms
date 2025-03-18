@@ -46,7 +46,7 @@ impl Color {
     }
 
     /// Construct a `Color` object from the specified red,
-    /// green and blue components.  
+   /// green and blue components.  
     /// These components should be specified as a u8 value
     /// (between 0-255).
     ///

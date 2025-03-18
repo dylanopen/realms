@@ -228,6 +228,7 @@ impl ShaderProgram {
                     gl_id, 1024, ptr::null_mut(),
                     info_log.as_mut_ptr() as *mut GLchar
                 );
+                #[expect(clippy::absolute_paths, reason = "importing the `str` module would clash with the `str` type")]
                 return Err(format!("Realms: failed to link shader program: {}", std::str::from_utf8(&info_log).unwrap()));
             }
             for shader in &shaders {
