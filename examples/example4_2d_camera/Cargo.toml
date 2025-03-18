@@ -1,0 +1,7 @@
+[package]
+name = "example4_2d_camera"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+realms = { path = "../../" } # replace this with `realms = "LATEST_VERSION"`
