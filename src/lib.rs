@@ -18,12 +18,46 @@
 // If you believe a lint should be removed from Realms, please make an issue
 // or PR explaining why it should be removed.
 
-#![warn(missing_docs)]
-#![warn(clippy::absolute_paths)]
-#![warn(clippy::allow_attributes)]
-#![warn(clippy::allow_attributes_without_reason)]
+#![warn(
+     clippy::all,
+     clippy::restriction,
+     clippy::pedantic,
+     clippy::nursery,
+     clippy::cargo,
+     clippy::correctness,
+     clippy::suspicious,
+     clippy::style,
+     clippy::complexity,
+     clippy::perf,
+     missing_docs,
+ )]
+
+ #![allow(
+    clippy::blanket_clippy_restriction_lints,
+    clippy::must_use_candidate,
+    clippy::allow_attributes_without_reason,
+    clippy::needless_return,
+    clippy::question_mark_used,
+    clippy::use_self,
+    clippy::implicit_return,
+    clippy::arbitrary_source_item_ordering,
+    clippy::doc_comment_double_space_linebreaks,
+    clippy::semicolon_inside_block,
+    clippy::undocumented_unsafe_blocks,
+    clippy::min_ident_chars,
+    clippy::float_arithmetic,
+    clippy::separated_literal_suffix,
+    clippy::unnecessary_semicolon,
+    clippy::single_call_fn,
+    clippy::shadow_same,
+    clippy::shadow_reuse,
+    clippy::too_long_first_doc_paragraph,
+    clippy::module_name_repetitions,
+    clippy::pub_use,
+ )]
 
 
+// Realms modules //
 pub mod window;
 pub mod input;
 pub mod shader;
@@ -31,8 +65,7 @@ pub mod data;
 pub mod vertex;
 pub mod texture;
 
-pub use gl;
-pub use glfw;
-
-
+// External crates //
+pub extern crate gl;
+pub extern crate glfw;
 

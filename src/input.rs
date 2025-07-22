@@ -126,7 +126,7 @@ pub enum Event {
     /// buttons.
     /// 
     /// ## Parameters:
-    /// - $1: the MouseButton that was pressed. Can be `Left`, `Right` or
+    /// - $1: the `MouseButton` that was pressed. Can be `Left`, `Right` or
     ///   `Middle`. See the `MouseButton` enum for more info.
     MouseDown(MouseButton),
 
@@ -244,7 +244,6 @@ impl MouseButton {
     /// You don't need to call this method. It is only used by
     /// `Event::from_glfw` to convert a glfw mouse event into a realms mouse
     /// event.
-    #[expect(clippy::single_call_fn, reason = "separating getting the MouseButton and getting the Event makes the code more readable")]
     #[inline]
     const fn from_glfw(glfw_mouse_button: glfw::MouseButton) -> MouseButton {
         #[expect(clippy::wildcard_enum_match_arm, reason = "if more variants are added, we still want to ignore them")]
@@ -264,7 +263,6 @@ impl MouseButton {
 #[repr(usize)]
 #[derive(Debug)]
 #[non_exhaustive]
-#[expect(clippy::min_ident_chars, reason = "the letter keys (A-Z) are single letters. this is fine.")]
 pub enum Key {
 
     /// The `SPACE` key. Has the keycode `32`.
@@ -667,7 +665,6 @@ impl Key {
     /// This function is known to SEGFAULT if the key is not known by the glfw
     /// ffi bindings. If your code crashes upon pressing a specific key, this
     /// is why.
-    #[expect(clippy::single_call_fn, reason = "separating getting the Key variant and getting the event makes the code more readable")]
     unsafe fn from_glfw(glfw_key: glfw::Key) -> Key {
         use core::mem;
         #[expect(clippy::as_conversions, reason = "can't find a way other than `as` to convert an enum variant to its respective integer")]

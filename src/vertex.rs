@@ -8,10 +8,12 @@
 //! works best for your program: Realms does not thrust a certain method
 //! of vertex data storage upon users.
 
-use std::ffi::c_void;
-use std::{mem, ptr};
+use core::ffi::c_void;
+use core::convert;
+use core::mem;
+use core::ptr;
 
-use gl::types::{GLfloat, GLsizei, GLuint};
+use gl::types::{GLfloat, GLsizei};
 
 /// A `VertexBuffer` is a wrapper around an opengl VAO, VBO and EBO.
 /// It is essentially a list of vertices (positions, colors, textures, etc.)
@@ -27,9 +29,30 @@ use gl::types::{GLfloat, GLsizei, GLuint};
 /// In short, this struct allows you to manage the shapes that are drawn to
 /// the screen.
 pub struct VertexBuffer {
+
+    /// The opengl pointer to the Vertex Array Object.  
+    /// The VAO allows for quickly switching between different VBOs.
+    /// > See <https://www.khronos.org/opengl/wiki/Vertex_Specification#Vertex_Array_Object>
     vao_id: u32,
+
+    /// The opengl pointer to the Vertex Buffer Object.  
+    /// The VBO stores the vertex data (information about the triangles we want
+    /// to draw to the screen, including their position, color and whatever
+    /// other data we pass it).
+    /// > See <https://www.khronos.org/opengl/wiki/Vertex_Specification#Vertex_Buffer_Object>
     vbo_id: u32,
+
+    /// The opengl pointer to the Vertex Buffer Object.  
+    /// The VBO stores the vertex data (information about the triangles we want
+    /// to draw to the screen, including their position, color and whatever
+    /// other data we pass it).
+    /// > See <https://www.opengl-tutorial.org/intermediate-tutorials/tutorial-9-vbo-indexing>
     ebo_id: u32,
+
+    /// Stores the number of elements in the VBO. This is equal to the length of
+    /// the `elements` slice passed to the `new` method, or the length of the
+    /// `vertices` slice divided by the stride side (number of components per
+    /// vertex).
     element_count: i32,
 }
 
@@ -43,7 +66,7 @@ impl VertexBuffer {
     ///
     /// If you don't know what opengl vertex buffers are, they are essentially
     /// arrays storing information about the triangles to draw to the screen.
-    /// > Please read https://learnopengl.com/Getting-started/Hello-Triangle
+    /// > Please read <https://learnopengl.com/Getting-started/Hello-Triangle>
     /// > (specifically the start of the "Vertex input" section) for more info
     /// > on opengl indices and buffers.
     ///
@@ -74,28 +97,42 @@ impl VertexBuffer {
     /// layout (location = 0) in vec2 aPos;  
     /// layout (location = 1) in vec4 aColor;
     /// ```
+    ///
+    /// ## Panics
+    ///
+    /// Although rare, it is technically possible for this function to PANIC if
+    /// the size of the vertices passed in was too large to be converted from a
+    /// `u32` to an `i32`. You probably don't need to worry about this, unless
+    /// you have over 2.1 billion vertex components (in which case you've got
+    /// bigger problems to deal with, such as your GPU being on fire).
+    #[expect(clippy::similar_names, reason = "yes clippy, the vao and vbo *should* have a similar name...")]
+    #[inline]
     pub fn new(vertices: &[f32], elements: &[u32]) -> VertexBuffer {
         let (mut vbo_id, mut vao_id, mut ebo_id) = (0, 0, 0);
-        unsafe {
-            gl::GenVertexArrays(1, &mut vao_id);
-            gl::GenBuffers(1, &mut vbo_id);
-            gl::GenBuffers(1, &mut ebo_id);
+            unsafe { gl::GenVertexArrays(1, &mut vao_id) };
+            unsafe { gl::GenBuffers(1, &mut vbo_id) };
+            unsafe { gl::GenBuffers(1, &mut ebo_id) };
 
-            gl::BindVertexArray(vao_id);
-            gl::BindBuffer(gl::ARRAY_BUFFER, vbo_id);
-            gl::BufferData(gl::ARRAY_BUFFER,
-                mem::size_of_val(vertices).try_into().unwrap(),
-                &vertices[0] as *const f32 as *const c_void,
-                gl::STATIC_DRAW);
-            gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ebo_id);
-            gl::BufferData(gl::ELEMENT_ARRAY_BUFFER,
-                mem::size_of_val(elements).try_into().unwrap(),
-                &elements[0] as *const GLuint /*or u32*/ as *const c_void,
-                gl::STATIC_DRAW);
-        };
+            unsafe { gl::BindVertexArray(vao_id) };
+            unsafe { gl::BindBuffer(gl::ARRAY_BUFFER, vbo_id) };
+            #[expect(clippy::expect_used, clippy::indexing_slicing)]
+            unsafe { gl::BufferData(gl::ARRAY_BUFFER,
+                mem::size_of_val(vertices).try_into()
+                    .expect("way too much vertex data, overflowed when casting u32 to i32"),
+                (&raw const vertices[0]).cast::<c_void>(),
+                gl::STATIC_DRAW); };
+            unsafe { gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ebo_id) };
+            #[expect(clippy::expect_used, clippy::indexing_slicing)]
+            unsafe { gl::BufferData(gl::ELEMENT_ARRAY_BUFFER,
+                mem::size_of_val(elements).try_into()
+                    .expect("way too many elements, overflowed when casting u32 to i32"),
+                (&raw const elements[0]).cast::<c_void>(),
+                gl::STATIC_DRAW); };
+        #[expect(clippy::expect_used)]
         VertexBuffer {
             vao_id, vbo_id, ebo_id,
-            element_count: elements.len() as i32,
+            element_count: elements.len().try_into()
+                .expect("way too many elements, overflowed when casting u32 to i32"),
         }
     }
 
@@ -121,16 +158,24 @@ impl VertexBuffer {
     ///     2, // second attrib. first had 2 components, so offset is 2
     /// )
     /// ```
+    ///
+    /// ## Panics
+    ///
+    /// It's likely impossible to occur, but if the value returned by
+    /// `mem::size_of` for the size of a `GLfloat` cannot be converted into a
+    /// `GLsizei`, the program will PANIC with an `expect` error.
+    #[inline]
     pub fn add_attrib(&self, layout: u32, component_count: i32, stride: i32, offset: usize) {
-        unsafe {
-            let offset_ptr = (offset * mem::size_of::<GLfloat>()) as *const c_void;
-            gl::VertexAttribPointer(
-                layout, component_count, gl::FLOAT, gl::FALSE,
-                stride * mem::size_of::<GLfloat>() as GLsizei,
-                offset_ptr
-            );
-            gl::EnableVertexAttribArray(layout);
-        }
+        #[expect(clippy::as_conversions, clippy::arithmetic_side_effects)]
+        let offset_ptr = (offset * mem::size_of::<GLfloat>()) as *const c_void;
+        #[expect(clippy::expect_used, clippy::arithmetic_side_effects)]
+        unsafe { gl::VertexAttribPointer(
+            layout, component_count, gl::FLOAT, gl::FALSE,
+            stride * convert::TryInto::<GLsizei>::try_into(mem::size_of::<GLfloat>())
+                .expect("Realms: Failed to convert size of GLfloat to GLsizei"),
+            offset_ptr
+        ); };
+        unsafe { gl::EnableVertexAttribArray(layout) };
     }
 
     /// Draw the vertex buffer as a series of triangles.
@@ -141,14 +186,13 @@ impl VertexBuffer {
     /// 
     /// WARNING: This binds the VAO, VBO and EBO. It *does not* unbind them
     /// afterwards.
+    #[inline]
     pub fn draw(&self) {
-        unsafe {
-            gl::BindVertexArray(self.vao_id);
-            gl::BindBuffer(gl::ARRAY_BUFFER, self.vbo_id);
-            gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, self.ebo_id);
-            gl::EnableVertexAttribArray(self.vao_id); // TODO: try replacing vao_id with 0??
-            gl::DrawElements(gl::TRIANGLES, self.element_count, gl::UNSIGNED_INT, ptr::null());
-        }
+        unsafe { gl::BindVertexArray(self.vao_id) };
+        unsafe { gl::BindBuffer(gl::ARRAY_BUFFER, self.vbo_id) };
+        unsafe { gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, self.ebo_id) };
+        unsafe { gl::EnableVertexAttribArray(self.vao_id) };
+        unsafe { gl::DrawElements(gl::TRIANGLES, self.element_count, gl::UNSIGNED_INT, ptr::null()) };
     }
 }
 

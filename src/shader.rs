@@ -2,8 +2,8 @@
 //! shaders used to draw vertices.
 //! It has two primary structs: `Shader` and `ShaderProgram`.
 
-#![expect(clippy::std_instead_of_alloc, reason = "seemingly no reason not to use std")]
-use std::ffi::CString;
+extern crate alloc;
+use alloc::ffi::CString;
 use core::ptr;
 
 use gl::types::{GLchar, GLint};
@@ -12,7 +12,6 @@ use gl::types::{GLchar, GLint};
 /// You should pass a variant of `ShaderType` when creating a `Shader`.
 #[repr(u32)]
 #[non_exhaustive]
-#[expect(clippy::module_name_repetitions, reason = "'Type' would be too generic: although repetition, `ShaderType` is an appropriate name")]
 pub enum ShaderType {
 
     /// `Vertex` shaders alter the *position* of vertices.
@@ -115,7 +114,6 @@ impl Shader {
         unsafe {gl::ShaderSource(gl_id, 1, &c_source.as_ptr(), ptr::null())};
         unsafe {gl::CompileShader(gl_id)};
 
-
         let mut success = GLint::from(gl::FALSE);
         let mut info_log = Vec::with_capacity(1024);
         unsafe {info_log.set_len(1024 - 1)}; // -1 to skip trailing \0
@@ -132,6 +130,7 @@ impl Shader {
             #[expect(clippy::shadow_reuse, reason = "we need to create a temp variable then shadow it, as otherwise the ref doesn't last long enough")]
             let gl_error = gl_error.split_once('\0')
                 .expect("Realms: received malformed shader compile error info from opengl").0;
+
             return Err(format!("Realms: failed to compile shader: {gl_error}"));
         }
 
@@ -146,7 +145,6 @@ impl Shader {
 /// program.
 /// It is provided as a convenient wrapper for creating a shader program from
 /// a vector of `Shader` objects.
-#[expect(clippy::module_name_repetitions, reason = "'Program' would be too generic: although repetition, `ShaderProgram` is an appropriate name")]
 #[non_exhaustive]
 pub struct ShaderProgram {
 
@@ -205,11 +203,12 @@ impl ShaderProgram {
     /// let f_shader = Shader::load_str(ShaderType::Fragment, f_shader_src).unwrap();
     /// let program = ShaderProgram::new(vec![v_shader, f_shader]).unwrap();
     /// ```
+    #[expect(clippy::needless_pass_by_value, reason = "the caller shouldn't be able to mutate the shaders after building the shader program")]
     #[inline]
-    #[expect(clippy::all, reason = "after fixing clippy's lints, the shader program fails to link, not sure why")]
     pub fn new(shaders: Vec<Shader>) -> Result<ShaderProgram, String> {
 
         #[expect(clippy::multiple_unsafe_ops_per_block, reason = "will fix when I have time; feel free to open a PR")]
+        #[expect(clippy::uninit_vec, reason = "we should add MaybeUninit wrapper to info_log in the future")]
         let gl_id = unsafe {
             let gl_id = gl::CreateProgram();
             for shader in &shaders {
@@ -229,7 +228,9 @@ impl ShaderProgram {
                     info_log.as_mut_ptr() as *mut GLchar
                 );
                 #[expect(clippy::absolute_paths, reason = "importing the `str` module would clash with the `str` type")]
-                return Err(format!("Realms: failed to link shader program: {}", std::str::from_utf8(&info_log).unwrap()));
+                return Err(format!("Realms: failed to link shader program: {}",
+                        core::str::from_utf8(&info_log).map_err(|e| e.to_string())?
+                ));
             }
             for shader in &shaders {
                 gl::DeleteShader(shader.gl_id);

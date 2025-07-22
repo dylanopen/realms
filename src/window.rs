@@ -32,6 +32,7 @@ pub struct Window {
 
     /// The glfw `PWindow` handler. The main interface for managing the glfw
     /// window.
+    #[expect(clippy::struct_field_names, reason = "needed to distinguish from glfw field")]
     glfw_window: glfw::PWindow,
 
     /// The `GlfwReceiver` for getting window events using glfw. You don't ever
@@ -60,7 +61,6 @@ impl Window {
     #[inline]
     pub fn new(width: u32, height: u32, title: &str) -> Result<Window, String> {
         use glfw::fail_on_errors;
-        #[expect(clippy::question_mark_used, reason = "? makes this code more concise and does exactly the same as a match statement would")]
         let mut glfw = glfw::init(fail_on_errors!())
             .map_err(|err| format!("Realms: failed to initialise glfw: {err}"))?;
 
@@ -69,7 +69,6 @@ impl Window {
         #[cfg(target_os = "macos")]
         glfw.window_hint(glfw::WindowHint::OpenGlForwardCompat(true));
 
-        #[expect(clippy::question_mark_used, reason = "? makes this code more concise and does exactly the same as a match statement would")]
         let (mut glfw_window, glfw_events) = glfw.create_window(width, height, title, glfw::WindowMode::Windowed)
             .ok_or("Realms: failed to create glfw window")?;
 
@@ -101,7 +100,6 @@ impl Window {
     /// }
     /// ```
     #[inline]
-    #[must_use]
     pub fn is_running(&self) -> bool {
         !self.glfw_window.should_close()
     }
@@ -160,7 +158,6 @@ impl Window {
     /// > Technical note: The `Color` is converted to a 4-float opengl color
     /// > using the `color.gl()` function.
     #[inline]
-    #[expect(clippy::min_ident_chars, reason = "r, g, b, a is short for red, green, blue, alpha")]
     pub fn fill(&mut self, color: Color) {
         let (r, g, b, a) = color.gl();
         unsafe { gl::ClearColor(r, g, b, a) };
@@ -206,12 +203,12 @@ impl Window {
     ///
     /// - Its only current job is to resize the OpenGL viewport if the window is
     ///   resized.
+    #[expect(clippy::unused_self, reason = "this function will be used in the future and will require the self parameter")]
+    #[expect(clippy::needless_pass_by_ref_mut, reason = "in the future, the window's state may need to be updated")]
     #[inline]
-    #[expect(clippy::unused_self, reason = "will be used in the future")]
-    #[expect(clippy::needless_pass_by_ref_mut, reason = "will need to be mutable in the future")]
     fn handle_event(&mut self, event: &Event) {
         #[expect(clippy::single_match, reason = "more events will be handled in the future")]
-            #[expect(clippy::wildcard_enum_match_arm, reason = "future added variants should be ignored anyway")]
+        #[expect(clippy::wildcard_enum_match_arm, reason = "if more Events are added, we just want to ignore them")]
         match *event {
             Event::ResizeWindow(width, height)
                 => unsafe { gl::Viewport(0, 0, width, height) },
