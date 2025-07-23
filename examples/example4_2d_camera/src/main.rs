@@ -35,19 +35,8 @@ fn main() {
 
     let vb = VertexBuffer::new(&vertices, &elements);
 
-    // same attributes as in the last example:
-    vb.add_attrib( // create an attribute for the POSITION of the vertex.
-        0, // first attrib so layout = 0
-        2, // the position component is made up of 2 floats here: x and y
-        5, // stride is 5 as each vertex is made up of 5 floats: 2 for position + 3 for color
-        0, // offset is 0 as this is the first attrib: no previous attribs.
-    );
-    vb.add_attrib( // create an attribute for the COLOR of the vertex.
-        1, // second attrib so layout = 1
-        3, // the color component is made up of 3 floats here: r, g and b
-        5, // stride is 5 as each vertex is made up of 5 floats: 2 for position + 3 for color
-        2, // offset is 2 as the previous attrib(s) used 2 floats
-    );
+    // same attribute layout as in the last example:
+    vb.set_layout(&[2, 3]);
 
     let (mut camera_x, mut camera_y) = (0.0, 0.0); // --NEW-- //
 

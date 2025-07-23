@@ -37,12 +37,10 @@ fn main() {
 
     // create a VertexBuffer using references to the `vertices` and `elements`:
     let vb = VertexBuffer::new(&vertices, &elements);
-    vb.add_attrib( // the attributes tell Realms how to interpret our vertices.
-        0, // layout is 0 as it's the first attrib. second would be 1, etc.
-        2, // the position component is made up of 2 floats here: x and y
-        2, // stride is 2 as each vertex is made up of 2 floats: x and y
-        0, // offset is 0 as this is the first attrib: no previous attribs.
-    );
+
+    // Tell Realms how each vertex is structured. Each vertex has a single
+    // component (a position) made up of TWO float components (x and y):
+    vb.set_layout(&[2]);
 
     // loop until the user closes the window
     while window.is_running() {
