@@ -12,8 +12,8 @@ fn main() {
         .expect("Failed to create window");
 
     let shader_program = ShaderProgram::new(vec![
-        Shader::load_str(ShaderType::Vertex, include_str!("vertex.glsl").to_string()).unwrap(),
-        Shader::load_str(ShaderType::Fragment, include_str!("fragment.glsl").to_string()).unwrap(),
+        Shader::load_str(ShaderType::Vertex, include_str!("vertex.glsl")).unwrap(),
+        Shader::load_str(ShaderType::Fragment, include_str!("fragment.glsl")).unwrap(),
     ]).unwrap();
     // NOTE: the shaders have changed slightly since example 2. Please update
     // `vertex.glsl` and `fragment.glsl` using the new versions of them in
