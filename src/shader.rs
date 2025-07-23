@@ -86,21 +86,22 @@ impl Shader {
     /// If you `.unwrap()` or `.expect(...)` the return value, it will print
     /// the GLSL error.
     ///
-    /// ## Panics
-    ///
-    /// In the rare but possible case that opengl returns a malformed response
-    /// upon request for the compile error of the shader, this function will
-    /// PANIC.
-    ///
-    /// ## Example usage:
+    /// ## Example usage
     ///
     /// ``` rust
-    /// let v_shader_src = include_str!("default.vert.glsl").to_string();
-    /// let f_shader_src = include_str!("default.frag.glsl").to_string();                
+    /// let v_shader_src = include_str!("default.vert.glsl");
+    /// let f_shader_src = include_str!("default.frag.glsl");                
     /// let v_shader = Shader::load_str(ShaderType::Vertex, v_shader_src).unwrap();         
     /// let f_shader = Shader::load_str(ShaderType::Fragment, f_shader_src).unwrap();
     /// let program = ShaderProgram::new(vec![v_shader, f_shader]).unwrap();
     /// ```
+    ///
+    /// ## Migrating from 1.3.3 to 2.3.3
+    ///
+    /// As of version `2.3.3` (major) `Shader::load_str` now takes the source
+    /// code for the shader (`source` parameter) as `&str` rather than `String`.
+    /// To fix this, you likely just need to remove the `.to_string()` call to
+    /// the shader source string, or add a `.as_str()` call.
     #[inline]
     #[expect(clippy::uninit_vec, reason = "I can't find a way to fix this lint, please PR/issue if you know the solution")]
     pub fn load_str(shader_type: ShaderType, source: &str) -> Result<Shader, String> {
