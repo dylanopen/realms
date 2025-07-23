@@ -177,6 +177,16 @@ impl VertexBuffer {
         ); };
         unsafe { gl::EnableVertexAttribArray(layout) };
     }
+    #[inline]
+    pub fn set_layout(&self, component_counts: &[i32]) {
+        let stride: i32 = component_counts.iter().sum();
+        let mut offset = 0;
+        #[expect(clippy::arithmetic_side_effects, clippy::unwrap_used)]
+        for (layout, component_count) in component_counts.iter().enumerate() {
+            self.add_attrib(u32::try_from(layout).unwrap(), *component_count, stride, offset);
+            offset += usize::try_from(*component_count).unwrap();
+        }
+    }
 
     /// Draw the vertex buffer as a series of triangles.
     /// Note that if you change the elements of the array of vertices or
