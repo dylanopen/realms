@@ -1,6 +1,6 @@
 [package]
 name = "realms"
-version = "2.3.3"
+version = "2.3.4"
 description = "A powerful and lightweight graphics library for making Rust games"
 homepage = "https://github.com/dylanopen/realms"
 repository = "https://github.com/dylanopen/realms"
