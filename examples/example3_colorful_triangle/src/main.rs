@@ -34,19 +34,11 @@ fn main() {
 
     let vb = VertexBuffer::new(&vertices, &elements);
 
-    vb.add_attrib( // create an attribute for the POSITION of the vertex.
-        0, // first attrib so layout = 0
-        2, // the position component is made up of 2 floats here: x and y
-        5, // stride is 5 as each vertex is made up of 5 floats: 2 for position + 3 for color
-        0, // offset is 0 as this is the first attrib: no previous attribs.
-    );
-
-    vb.add_attrib( // create an attribute for the COLOR of the vertex.
-        1, // second attrib so layout = 1
-        3, // the color component is made up of 3 floats here: r, g and b
-        5, // stride is 5 as each vertex is made up of 5 floats: 2 for position + 3 for color
-        2, // offset is 2 as the previous attrib(s) used 2 floats
-    );
+    // tell Realms how to split up our vertices array slice:
+    vb.set_layout(&[
+        2, // each vertex has a position, made up of TWO float components (x, y)
+        3, // each vertex has a color, made up of THREE float components (r, g, b)
+    ]);
 
     while window.is_running() {
         window.new_frame(&shader_program);
