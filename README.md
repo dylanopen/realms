@@ -17,6 +17,34 @@ documentation on [docs.rs](https://docs.rs/realms).
 You can find a list of examples for how to use Realms at
 [github.com/dylanopen/realms/tree/main/examples](https://github.com/dylanopen/realms/tree/main/examples)
 
+Here's the code needed to create a window:
+
+``` rust
+use realms::window::Window; // don't accidentally import realms::glfw::Window!
+use realms::data::Color;
+use realms::input::{Event, Key}; // again, don't import from realms::glfw
+use realms::shader::ShaderProgram;
+
+fn main() {
+    // create the window and unwrap the result:
+    let mut window = Window::new(800, 600, "Hello Window!")
+        .expect("Failed to create window");
+
+    // loop until the user closes the window or the 'Q' key is pressed
+    while window.is_running() {
+        window.new_frame(&ShaderProgram::NONE); // swap the buffers (draw to the screen)
+        window.fill(Color::rgb(20, 34, 40)); // fill the screen dark blue
+
+        for event in window.events() { // loop over all window events
+            match event {
+                Event::KeyDown(Key::Q) => window.close(), // if Q pressed, exit loop
+                _ => {}, // otherwise do nothing
+            }
+        }
+    }
+}
+```
+
 ## Useful resources
 
 Realms is based on OpenGL. For this reason, it is very helpful to have at
