@@ -32,7 +32,7 @@ fn main() {
 
     // loop until the user closes the window or the 'Q' key is pressed
     while window.is_running() {
-        window.new_frame(&ShaderProgram::NONE); // swap the buffers (draw to the screen)
+        window.new_frame(); // swap the buffers (draw to the screen)
         window.fill(Color::rgb(20, 34, 40)); // fill the screen dark blue
 
         for event in window.events() { // loop over all window events
