@@ -190,8 +190,8 @@ impl VertexBuffer {
     ///
     /// For example, if each vertex has a `position` and a `color`, your
     /// component counts may be:
-    /// - `3` components for position (x, y and z)
-    /// - `4` components for color (r, g and b)
+    /// - `3` components for position (X, Y and Z)
+    /// - `4` components for color (R, G, B and A)
     /// - Therefore your `component_counts` slice would be `[3, 4]`.
     ///
     /// ## Example usage
