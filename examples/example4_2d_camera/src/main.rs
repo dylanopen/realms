@@ -41,7 +41,7 @@ fn main() {
     let (mut camera_x, mut camera_y) = (0.0, 0.0); // --NEW-- //
 
     while window.is_running() {
-        window.new_frame(&shader_program);
+        window.new_frame();
         window.fill(Color::rgb(20, 34, 40));
 
 // --- NEW --- //
@@ -61,7 +61,7 @@ fn main() {
         shader_program.uniform_2f("cameraPos", (camera_x, camera_y));
 // --- END NEW --- //
         
-        vb.draw(); // draw the data in our vertex buffer
+        vb.draw(&shader_program); // draw the data in our vertex buffer
     }
 }
 
