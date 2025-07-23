@@ -177,6 +177,47 @@ impl VertexBuffer {
         ); };
         unsafe { gl::EnableVertexAttribArray(layout) };
     }
+
+    /// Adding the vertex attributes through the `add_attrib` method requires a
+    /// lot of boilerplate and leads to messy code. Realms can infer all of that
+    /// information just from a slice of component counts.
+    ///
+    /// A component count is just a number reflecting the number of floats a
+    /// component is made up of. A component is some information about the
+    /// vertex that your vertex shader takes in as a `layout` parameter.
+    ///
+    /// For example, if each vertex has a `position` and a `color`, your
+    /// component counts may be:
+    /// - `3` components for position (x, y and z)
+    /// - `4` components for color (r, g and b)
+    /// - Therefore your `component_counts` slice would be `[3, 4]`.
+    ///
+    /// ## Example usage
+    ///
+    /// ``` rust
+    /// let vb = VertexBuffer::new(...);
+    /// vb.set_layout(&[
+    ///     3, // if our vertex position is made up of 3 floats (x, y, z)
+    ///     4, // if our vertex color is made up of 4 floats (r, g, b, a)
+    /// ]);
+    /// ```
+    ///
+    /// ## Panics
+    ///
+    /// If the layout could not be converted from a `usize` into a `u32` (this
+    /// could only happen if there are over 4.2 billion components) the program
+    /// will PANIC. This will likely never happen.
+    ///
+    /// If the sum of the components are larger than the max usize value, the
+    /// program will PANIC. But you will never need that many components.
+    /// Also, on 8-bit or 16-bit systems, the max value for a `usize` is much
+    /// lower, so casting each `component` `i32` to a `usize` may fail and cause
+    /// a PANIC.
+    ///
+    /// It's likely impossible to occur, but if the value returned by
+    /// `mem::size_of` for the size of a `GLfloat` cannot be converted into a
+    /// `GLsizei`, the program will PANIC with an `expect` error. This panic is
+    /// raised by the `add_attrib` method.
     #[inline]
     pub fn set_layout(&self, component_counts: &[i32]) {
         let stride: i32 = component_counts.iter().sum();
