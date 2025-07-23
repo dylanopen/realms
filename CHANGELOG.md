@@ -42,3 +42,16 @@
   leading to faster compilation times
 - No API changes
 
+## 2.3.4 -> 3.3.4 (major, breaking)
+
+- Fixed broken code example in documentation for `Shader` and `ShaderProgram`
+  structs (no longer convert to owned strings using `.to_string()`)
+- Fixed missing 'a' component when listed in `VertexBuffer::set_layout`
+  documentation
+- Update examples to use the new way of binding shaders
+- Changed method signature of `Window::new_frame(&mut self, &ShaderProgram)` to
+  `Window::new_frame(&mut self)` (no longer takes a reference to the
+  `ShaderProgram`) -- BREAKING
+- Changed method signature of `VertexBuffer::draw(&self)` to
+  `VertexBuffer::draw(&self, &ShaderProgram)` -- BREAKING
+
