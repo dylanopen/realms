@@ -35,3 +35,10 @@
 - Deleted unused function `Color::add_layer` -- BREAKING
 - Update examples to use new `Shader::load_str`
 
+## 2.3.3 -> 2.3.4 (patch)
+
+- Updated the `image` dependency from `0.19.0` to `0.25.6`
+- Removed some `image` features, reducing dependencies from `58` to `37`,
+  leading to faster compilation times
+- No API changes
+
