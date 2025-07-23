@@ -86,50 +86,44 @@ impl Shader {
     /// If you `.unwrap()` or `.expect(...)` the return value, it will print
     /// the GLSL error.
     ///
-    /// ## Panics
-    ///
-    /// In the rare but possible case that opengl returns a malformed response
-    /// upon request for the compile error of the shader, this function will
-    /// PANIC.
-    ///
-    /// ## Example usage:
+    /// ## Example usage
     ///
     /// ``` rust
-    /// let v_shader_src = include_str!("default.vert.glsl").to_string();
-    /// let f_shader_src = include_str!("default.frag.glsl").to_string();                
+    /// let v_shader_src = include_str!("default.vert.glsl");
+    /// let f_shader_src = include_str!("default.frag.glsl");                
     /// let v_shader = Shader::load_str(ShaderType::Vertex, v_shader_src).unwrap();         
     /// let f_shader = Shader::load_str(ShaderType::Fragment, f_shader_src).unwrap();
     /// let program = ShaderProgram::new(vec![v_shader, f_shader]).unwrap();
     /// ```
+    ///
+    /// ## Migrating from 1.3.3 to 2.3.3
+    ///
+    /// As of version `2.3.3` (major) `Shader::load_str` now takes the source
+    /// code for the shader (`source` parameter) as `&str` rather than `String`.
+    /// To fix this, you likely just need to remove the `.to_string()` call to
+    /// the shader source string, or add a `.as_str()` call.
     #[inline]
-    #[expect(clippy::needless_pass_by_value, reason = "in next major release, instead take in a reference")]
-    #[expect(clippy::unwrap_in_result, reason = "this crash is likely extremely rare if not impossible")]
-    #[expect(clippy::uninit_vec, reason = "I can't find a way to fix this lint, PR/issue if you know the solution")]
-    pub fn load_str(shader_type: ShaderType, source: String) -> Result<Shader, String> {
+    #[expect(clippy::uninit_vec, reason = "I can't find a way to fix this lint, please PR/issue if you know the solution")]
+    pub fn load_str(shader_type: ShaderType, source: &str) -> Result<Shader, String> {
         #[expect(clippy::as_conversions, reason = "no other way to get integral value of enum variant")]
         let gl_id = unsafe {gl::CreateShader(shader_type as u32)};
-        #[expect(clippy::question_mark_used, reason = "? here simplifies code and does the same thing as a match would")]
         let c_source = CString::new(source.as_bytes())
             .map_err(|err| format!("Realms: failed to create CString from shader source: {err}"))?;
         unsafe {gl::ShaderSource(gl_id, 1, &c_source.as_ptr(), ptr::null())};
         unsafe {gl::CompileShader(gl_id)};
 
         let mut success = GLint::from(gl::FALSE);
-        let mut info_log = Vec::with_capacity(1024);
+        let mut info_log: Vec<u8> = Vec::with_capacity(1024);
         unsafe {info_log.set_len(1024 - 1)}; // -1 to skip trailing \0
         unsafe {gl::GetShaderiv(gl_id, gl::COMPILE_STATUS, &raw mut success)};
         if success != GLint::from(gl::TRUE) {
-            #[expect(clippy::as_conversions, reason = "seemingly no other way to cast to a GLchar")]
-            #[expect(clippy::ptr_as_ptr, reason = "clippy's suggestion doesn't seem to work")]
             unsafe {gl::GetShaderInfoLog(
                 gl_id, 1024, ptr::null_mut(),
-                info_log.as_mut_ptr() as *mut GLchar
+                info_log.as_mut_ptr().cast::<GLchar>()
             );};
             let gl_error = String::from_utf8_lossy(&info_log);
-            #[expect(clippy::expect_used, reason = "this crash is likely extremely rare if not impossible")]
-            #[expect(clippy::shadow_reuse, reason = "we need to create a temp variable then shadow it, as otherwise the ref doesn't last long enough")]
             let gl_error = gl_error.split_once('\0')
-                .expect("Realms: received malformed shader compile error info from opengl").0;
+                .ok_or("Realms: received malformed shader compile error info from opengl")?.0;
 
             return Err(format!("Realms: failed to compile shader: {gl_error}"));
         }
