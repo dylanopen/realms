@@ -109,9 +109,9 @@ impl VertexBuffer {
     #[inline]
     pub fn new(vertices: &[f32], elements: &[u32]) -> VertexBuffer {
         let (mut vbo_id, mut vao_id, mut ebo_id) = (0, 0, 0);
-            unsafe { gl::GenVertexArrays(1, &mut vao_id) };
-            unsafe { gl::GenBuffers(1, &mut vbo_id) };
-            unsafe { gl::GenBuffers(1, &mut ebo_id) };
+            unsafe { gl::GenVertexArrays(1, &raw mut vao_id) };
+            unsafe { gl::GenBuffers(1, &raw mut vbo_id) };
+            unsafe { gl::GenBuffers(1, &raw mut ebo_id) };
 
             unsafe { gl::BindVertexArray(vao_id) };
             unsafe { gl::BindBuffer(gl::ARRAY_BUFFER, vbo_id) };

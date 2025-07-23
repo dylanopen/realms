@@ -117,7 +117,7 @@ impl Shader {
         let mut success = GLint::from(gl::FALSE);
         let mut info_log = Vec::with_capacity(1024);
         unsafe {info_log.set_len(1024 - 1)}; // -1 to skip trailing \0
-        unsafe {gl::GetShaderiv(gl_id, gl::COMPILE_STATUS, &mut success)};
+        unsafe {gl::GetShaderiv(gl_id, gl::COMPILE_STATUS, &raw mut success)};
         if success != GLint::from(gl::TRUE) {
             #[expect(clippy::as_conversions, reason = "seemingly no other way to cast to a GLchar")]
             #[expect(clippy::ptr_as_ptr, reason = "clippy's suggestion doesn't seem to work")]
@@ -219,7 +219,7 @@ impl ShaderProgram {
             let mut success = GLint::from(gl::FALSE);
             let mut info_log = Vec::with_capacity(1024);
             info_log.set_len(1024 - 1); // subtract 1 to skip the trailing null character
-            gl::GetProgramiv(gl_id, gl::LINK_STATUS, &mut success);
+            gl::GetProgramiv(gl_id, gl::LINK_STATUS, &raw mut success);
             if success != GLint::from(gl::TRUE) {
                 #[expect(clippy::as_conversions, reason = "need to cast mut ptr -> *mut GLchar")]
                 #[expect(clippy::ptr_as_ptr, reason = "need to cast mut ptr -> *mut GLchar")]

@@ -44,7 +44,7 @@ impl Texture {
     pub fn load_file(path: &str) -> Result<Texture, String> {
         let mut gl_id = 0;
         
-        unsafe { gl::GenTextures(1, &mut gl_id) };
+        unsafe { gl::GenTextures(1, &raw mut gl_id) };
         unsafe { gl::BindTexture(gl::TEXTURE_2D, gl_id) };
         #[expect(clippy::as_conversions, clippy::cast_possible_wrap)]
         unsafe { gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_S, gl::REPEAT as i32) };
