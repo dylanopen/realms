@@ -24,5 +24,6 @@
 
 - Add `VertexBuffer::set_layout` method
   - [https://docs.rs/realms/1.2.3/realms/vertex/struct.VertexBuffer.html#method.set_layout]
+- Update examples to use `VertexBuffer::set_layout` method
 - No breaking changes
 
