@@ -56,8 +56,8 @@ pub enum ShaderType {
 /// ## Example usage:
 ///
 /// ``` rust
-/// let v_shader_src = include_str!("default.vert.glsl").to_string();
-/// let f_shader_src = include_str!("default.frag.glsl").to_string();                
+/// let v_shader_src = include_str!("default.vert.glsl");
+/// let f_shader_src = include_str!("default.frag.glsl");
 /// let v_shader = Shader::load_str(ShaderType::Vertex, v_shader_src).unwrap();         
 /// let f_shader = Shader::load_str(ShaderType::Fragment, f_shader_src).unwrap();
 /// let program = ShaderProgram::new(vec![v_shader, f_shader]).unwrap();
@@ -191,8 +191,8 @@ impl ShaderProgram {
     /// ## Example usage:
     ///
     /// ``` rust
-    /// let v_shader_src = include_str!("default.vert.glsl").to_string();
-    /// let f_shader_src = include_str!("default.frag.glsl").to_string();                
+    /// let v_shader_src = include_str!("default.vert.glsl");
+    /// let f_shader_src = include_str!("default.frag.glsl");
     /// let v_shader = Shader::load_str(ShaderType::Vertex, v_shader_src).unwrap();         
     /// let f_shader = Shader::load_str(ShaderType::Fragment, f_shader_src).unwrap();
     /// let program = ShaderProgram::new(vec![v_shader, f_shader]).unwrap();
