@@ -11,7 +11,6 @@ use glfw::Context as _;
 
 use super::data::Color;
 use super::input::Event;
-use super::shader::ShaderProgram;
 
 /// The main struct for creating and interacting with Realms windows.
 ///
