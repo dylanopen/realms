@@ -51,9 +51,9 @@ impl Texture {
         #[expect(clippy::as_conversions, clippy::cast_possible_wrap)]
         unsafe { gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_T, gl::REPEAT as i32) };
         #[expect(clippy::as_conversions, clippy::cast_possible_wrap)]
-        unsafe { gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NONE as i32) };
+        unsafe { gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32) };
         #[expect(clippy::as_conversions, clippy::cast_possible_wrap)]
-        unsafe { gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NONE as i32) };
+        unsafe { gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32) };
 
         let img = image::open(Path::new(path))
             .map_err(|err| format!("Realms: could not open image file {path}: {err}"))?;
