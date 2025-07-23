@@ -20,7 +20,7 @@ fn main() {
 
     // create an [f32] slice of vertex data:
     let vertices: [f32; 6] = [ // specify type `f32` with 6 elements.
-    //   X    Y
+    //   X     Y
          0.0,  0.5,  // top of triangle
         -0.5, -0.5,  // bottom left of triangle
          0.5, -0.5,  // bottom right of triangle
@@ -45,11 +45,11 @@ fn main() {
     // loop until the user closes the window
     while window.is_running() {
         // swap the buffers (draw to the screen) and bind our shader program:
-        window.new_frame(&shader_program);
+        window.new_frame();
 
         window.fill(Color::rgb(20, 34, 40)); // fill the screen dark blue
         window.events(); // we don't handle any events, but we need to poll for them anyway.
         
-        vb.draw(); // draw the data in our vertex buffer
+        vb.draw(&shader_program); // draw the data in our vertex buffer
     }
 }
