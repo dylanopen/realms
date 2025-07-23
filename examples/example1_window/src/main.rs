@@ -1,7 +1,6 @@
 use realms::window::Window; // don't accidentally import realms::glfw::Window!
 use realms::data::Color;
 use realms::input::{Event, Key}; // again, don't import from realms::glfw
-use realms::shader::ShaderProgram;
 
 fn main() {
     // create the window and unwrap the result:
