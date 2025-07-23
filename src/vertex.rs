@@ -15,6 +15,8 @@ use core::ptr;
 
 use gl::types::{GLfloat, GLsizei};
 
+use crate::shader::ShaderProgram;
+
 /// A `VertexBuffer` is a wrapper around an opengl VAO, VBO and EBO.
 /// It is essentially a list of vertices (positions, colors, textures, etc.)
 /// and elements (which tell opengl which order to draw/join the vertices in).
@@ -188,8 +190,8 @@ impl VertexBuffer {
     ///
     /// For example, if each vertex has a `position` and a `color`, your
     /// component counts may be:
-    /// - `3` components for position (x, y and z)
-    /// - `4` components for color (r, g and b)
+    /// - `3` components for position (X, Y and Z)
+    /// - `4` components for color (R, G, B and A)
     /// - Therefore your `component_counts` slice would be `[3, 4]`.
     ///
     /// ## Example usage
@@ -237,8 +239,42 @@ impl VertexBuffer {
     /// 
     /// WARNING: This binds the VAO, VBO and EBO. It *does not* unbind them
     /// afterwards.
+    ///
+    /// ## Example usage
+    ///
+    /// ``` rust
+    /// while w.is_running() {
+    ///     w.new_frame();
+    ///     vertex_buffer.draw(&shader_program);
+    /// }
+    /// ```
+    /// ## Migrating from 2.3.4 to 3.3.4
+    ///
+    /// The `Window::new_frame` method no longer takes in a shader program
+    /// reference, but the `VertexBuffer::draw` method now does.
+    /// You should bind the shader program when calling this draw method, NOT
+    /// when calling `Window::new_frame`.
+    ///
+    /// In short, instead of doing this (pre-3.3.4):
+    ///
+    /// ``` rust
+    /// while w.is_running() {
+    ///     w.new_frame(&shader_program);
+    ///     vertex_buffer.draw();
+    /// }
+    /// ```
+    ///
+    /// You should do this (3.3.4+):
+    ///
+    /// ``` rust
+    /// while w.is_running() {
+    ///     w.new_frame();
+    ///     vertex_buffer.draw(&shader_program);
+    /// }
+    /// ```
     #[inline]
-    pub fn draw(&self) {
+    pub fn draw(&self, shader_program: &ShaderProgram) {
+        shader_program.bind();
         unsafe { gl::BindVertexArray(self.vao_id) };
         unsafe { gl::BindBuffer(gl::ARRAY_BUFFER, self.vbo_id) };
         unsafe { gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, self.ebo_id) };

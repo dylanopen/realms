@@ -11,7 +11,6 @@ use glfw::Context as _;
 
 use super::data::Color;
 use super::input::Event;
-use super::shader::ShaderProgram;
 
 /// The main struct for creating and interacting with Realms windows.
 ///
@@ -142,12 +141,36 @@ impl Window {
     /// while w.is_running() {
     ///     w.new_frame();
     ///     for event in w.events() {...}
+    ///     vertex_buffer.draw(&shader_program);
+    /// }
+    /// ```
+    ///
+    /// ## Migrating from 2.3.4 to 3.3.4
+    ///
+    /// The `new_frame` method no longer takes in a shader program reference.
+    /// You should instead bind the shader program when calling the `draw`
+    /// method on a `VertexBuffer`.
+    ///
+    /// In short, instead of doing this (pre-3.3.4):
+    ///
+    /// ``` rust
+    /// while w.is_running() {
+    ///     w.new_frame(&shader_program);
+    ///     vertex_buffer.draw();
+    /// }
+    /// ```
+    ///
+    /// You should do this (3.3.4+):
+    ///
+    /// ``` rust
+    /// while w.is_running() {
+    ///     w.new_frame();
+    ///     vertex_buffer.draw(&shader_program);
     /// }
     /// ```
     #[inline]
-    pub fn new_frame(&mut self, shader_program: &ShaderProgram) {
+    pub fn new_frame(&mut self) {
         self.glfw_window.swap_buffers();
-        shader_program.new_frame();
     }
 
     /// Fills the screen with the specified `Color`.

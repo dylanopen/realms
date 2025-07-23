@@ -41,11 +41,11 @@ fn main() {
     ]);
 
     while window.is_running() {
-        window.new_frame(&shader_program);
+        window.new_frame();
 
         window.fill(Color::rgb(20, 34, 40));
         window.events(); // we don't handle any events, but we need to poll for them anyway.
         
-        vb.draw(); // draw the data in our vertex buffer
+        vb.draw(&shader_program); // draw the data in our vertex buffer
     }
 }

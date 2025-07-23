@@ -56,8 +56,8 @@ pub enum ShaderType {
 /// ## Example usage:
 ///
 /// ``` rust
-/// let v_shader_src = include_str!("default.vert.glsl").to_string();
-/// let f_shader_src = include_str!("default.frag.glsl").to_string();                
+/// let v_shader_src = include_str!("default.vert.glsl");
+/// let f_shader_src = include_str!("default.frag.glsl");
 /// let v_shader = Shader::load_str(ShaderType::Vertex, v_shader_src).unwrap();         
 /// let f_shader = Shader::load_str(ShaderType::Fragment, f_shader_src).unwrap();
 /// let program = ShaderProgram::new(vec![v_shader, f_shader]).unwrap();
@@ -191,8 +191,8 @@ impl ShaderProgram {
     /// ## Example usage:
     ///
     /// ``` rust
-    /// let v_shader_src = include_str!("default.vert.glsl").to_string();
-    /// let f_shader_src = include_str!("default.frag.glsl").to_string();                
+    /// let v_shader_src = include_str!("default.vert.glsl");
+    /// let f_shader_src = include_str!("default.frag.glsl");
     /// let v_shader = Shader::load_str(ShaderType::Vertex, v_shader_src).unwrap();         
     /// let f_shader = Shader::load_str(ShaderType::Fragment, f_shader_src).unwrap();
     /// let program = ShaderProgram::new(vec![v_shader, f_shader]).unwrap();
@@ -236,18 +236,36 @@ impl ShaderProgram {
 
     }
 
-    /// Bind the shader.
-    /// If you pass this shader program to the `w.new_frame()` function, this
-    /// function is automatically run at the start of each frame so does not
-    /// need to be manually called.
-    /// If you would like to render multiple `VertexBuffer`s with different
-    /// shader programs, however, you can manually call this in the middle of
-    /// your loop to switch to a different shader program.
+    /// Bind (use) the shader.
+    /// If you pass this shader program to the `VertexBuffer::new_frame()`
+    /// method, this method is automatically run before drawing the vertices,
+    /// so this method does not need to be manually called.
     ///
     /// In short, calling this funtion tells opengl to use this shader program
     /// to draw the vertices.
+    ///
+    /// ## Example usage
+    ///
+    /// ``` rust
+    /// let shader_program = ...;
+    /// let vertex_buffer = ...;
+    /// while w.is_running() {
+    ///     w.new_frame();
+    ///     shader_program.bind(); // manually
+    ///     vertex_buffer.draw(&shader_program); // automatically calls bind
+    /// }
+    /// ```
+    ///
+    /// ## Migrating from 2.3.4 to 3.3.4
+    ///
+    /// The name of this method changed in version `3.3.4` from `new_frame` to
+    /// `bind`. Nothing else about this method has changed, only its name.
+    /// 
+    /// However, the usage has changed. While this method used to be called by
+    /// the `Window::new_frame` method, it is no longer called by that method
+    /// but instead is called by the `VertexBuffer::draw` method.
     #[inline]
-    pub fn new_frame(&self) {
+    pub fn bind(&self) {
         unsafe { gl::UseProgram(self.gl_id) };
     }
 
