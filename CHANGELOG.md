@@ -5,13 +5,13 @@
 - Add the `NONE` constant to the `ShaderProgram` struct
   - [https://docs.rs/realms/latest/realms/shader/struct.ShaderProgram.html#associatedconstant.NONE]
 
-# 1.2.1 -> 1.2.2 (patch)
+## 1.2.1 -> 1.2.2 (patch)
 
 - Add documentation to all items
 - Fix many clippy lint warnings (improve backend codebase)
 - No API changes
 
-# 1.2.2 -> 1.2.3 (patch)
+## 1.2.2 -> 1.2.3 (patch)
 
 - Now uses all clippy lints, with some explicitly ignored 
 - Fix clippy lints to improve backend codebase
@@ -20,18 +20,25 @@
 - No API changes
 - Add window example (1) to README.md
 
-# 1.2.3 -> 1.3.3 (minor)
+## 1.2.3 -> 1.3.3 (minor)
 
 - Add `VertexBuffer::set_layout` method
   - [https://docs.rs/realms/1.2.3/realms/vertex/struct.VertexBuffer.html#method.set_layout]
 - Update examples to use `VertexBuffer::set_layout` method
 - No breaking changes
 
-# 1.3.3 -> 2.3.3 (major, breaking)
+## 1.3.3 -> 2.3.3 (major, breaking)
 
 - Fixed some lints in `Shader::load_str` method
 - `Shader::load_str` function now takes `source` as `&str` instead of `String`
   -- BREAKING
 - Deleted unused function `Color::add_layer` -- BREAKING
 - Update examples to use new `Shader::load_str`
+
+## 2.3.3 -> 2.3.4 (patch)
+
+- Updated the `image` dependency from `0.19.0` to `0.25.6`
+- Removed some `image` features, reducing dependencies from `58` to `37`,
+  leading to faster compilation times
+- No API changes
 

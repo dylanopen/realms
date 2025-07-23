@@ -6,8 +6,6 @@
 use core::ffi::c_void;
 use std::path::Path;
 
-use image::GenericImage as _;
-
 /// This struct stores the opengl id for a given 2D texture.
 /// It is a wrapper around creating and binding an opengl `TEXTURE_2D`.
 /// You still need to define attributes in the `VertexBuffer` and as inputs to
@@ -59,7 +57,7 @@ impl Texture {
             .map_err(|err| format!("Realms: could not open image file {path}: {err}"))?;
         let img = img.flipv();
 
-        let data = img.raw_pixels();
+        let data = img.as_bytes();
         unsafe {
             #[expect(clippy::borrow_as_ptr, clippy::indexing_slicing, clippy::as_conversions, reason = "can't find other way to specify pixels field")]
             gl::TexImage2D(gl::TEXTURE_2D,
