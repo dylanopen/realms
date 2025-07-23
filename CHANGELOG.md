@@ -20,3 +20,8 @@
 - No API changes
 - Add window example (1) to README.md
 
+# 1.2.3 -> 1.3.3 (minor)
+
+- Add `VertexBuffer::set_layout` method
+- No breaking changes
+
