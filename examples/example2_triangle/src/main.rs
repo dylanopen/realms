@@ -10,8 +10,8 @@ fn main() {
 
     // create the shader program from the shaders `vertex.glsl` and `fragment.glsl`:
     let shader_program = ShaderProgram::new(vec![
-        Shader::load_str(ShaderType::Vertex, include_str!("vertex.glsl").to_string()).unwrap(),
-        Shader::load_str(ShaderType::Fragment, include_str!("fragment.glsl").to_string()).unwrap(),
+        Shader::load_str(ShaderType::Vertex, include_str!("vertex.glsl")).unwrap(),
+        Shader::load_str(ShaderType::Fragment, include_str!("fragment.glsl")).unwrap(),
     ]).unwrap();
     // NOTE: you need to code the `vertex.glsl` and `fragment.glsl` files. Some
     // default shaders are provided for you, in the same directory as this file
