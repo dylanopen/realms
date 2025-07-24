@@ -61,3 +61,11 @@ Non-breaking changes:
   documentation
 - Update examples to use the new way of binding shaders
 
+## 3.3.4 -> 3.4.4 (minor)
+
+- Add `shape` module
+- Add builtin shader `shape2d.vert.glsl` (vertex)
+- Add builtin shader `shape2d.frag.glsl` (fragment)
+- Add `shape2d_shader` function for loading builtin shape2d shaders
+- Add `TriangleShape` struct for drawing 3 points more easily
+
