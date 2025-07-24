@@ -42,8 +42,8 @@ use crate::vertex::VertexBuffer;
 #[inline]
 pub fn shape2d_shader() -> ShaderProgram {
     ShaderProgram::new(vec![
-        Shader::load_str(ShaderType::Vertex, include_str!("shader/shape2d.vert.glsl")).unwrap(),
-        Shader::load_str(ShaderType::Fragment, include_str!("shader/shape2d.frag.glsl")).unwrap(),
+        Shader::load_str(ShaderType::Vertex, include_str!("builtin_shaders/shape2d.vert.glsl")).unwrap(),
+        Shader::load_str(ShaderType::Fragment, include_str!("builtin_shaders/shape2d.frag.glsl")).unwrap(),
     ]).unwrap()
 }
 
