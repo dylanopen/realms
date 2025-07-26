@@ -73,3 +73,11 @@ Non-breaking changes:
   - Add `TriangleShape::new_flat_isosceles` function
   - Add `TriangleShape::draw` method
 
+## 3.4.4 -> 3.5.4 (minor)
+
+- Add `RectangleShape` struct
+  - Add `RectangleShape::new` function
+  - Add `RectangleShape::new_solid` function
+  - Add `RectangleShape::new_flat` function
+  - Add `RectangleShape::draw` method
+
