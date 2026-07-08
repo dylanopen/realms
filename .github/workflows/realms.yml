@@ -1,8 +1,6 @@
 name: Rust
 
 on:
-  push:
-    branches: [ "*" ]
   pull_request:
     branches: [ "*" ]
 
@@ -21,10 +19,11 @@ jobs:
       run: sudo apt install mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev libglew-dev libglfw3-dev libglm-dev libao-dev libmpg123-dev libxinerama-dev libwayland-dev libxkbcommon-dev xorg-dev libxcursor-dev
     - name: Build
       run: cargo build --verbose
-    - name: Run tests
+    - name: Tests
       run: cargo test --verbose
-    - name: Run Clippy lints
+    - name: Formatting Checks
+      run: cargo fmt --check
+    - name: Clippy Lints
       run: cargo clippy -- -Dwarnings
-    - name: Build examples
-      run: cargo build --verbose
-      working-directory: examples
+    - name: Examples
+      run: cargo build --examples

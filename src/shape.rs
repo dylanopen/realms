@@ -1,5 +1,6 @@
 //! The `shape` module contains structs and functions for drawing simple 2D
 //! shapes to the screen.
+//!
 //! Each shape instance will create a new `VertexBuffer` which need to
 //! individually be sent to the GPU. For that reason, this module should only
 //! be used for prototyping and applications where performance isn't important.
@@ -8,14 +9,15 @@ use crate::data::Color;
 use crate::shader::{Shader, ShaderProgram, ShaderType};
 use crate::vertex::VertexBuffer;
 
-/// This module contains structs for drawing simple shapes to the screen. For
-/// this reason, it's useful to have a set of default shaders that are
+/// This function simply compiles and returns a `ShaderProgram` which will
+/// be compatible with all shapes in this module.
+///
+/// This module contains structs for drawing simple shapes to the screen.
+/// For this reason, it's useful to have a set of default shaders that are
 /// guaranteed to work out-of-the-box when drawing simple 2D shapes.
 ///
-/// This function simply compiles and returns a `ShaderProgram` which will
-/// be compatible with all shapes in this module. You are advised to call and
-/// store the result of this function at the beginning of your main function,
-/// so you don't ever have to recompile this shader.
+/// You are advised to call and store the result of this function at the beginning
+/// of your main function, so you don't ever have to recompile this shader.
 ///
 /// ## Example usage
 ///
@@ -37,14 +39,31 @@ use crate::vertex::VertexBuffer;
 /// shader program will fail to link or compile, and then this function will
 /// PANIC.
 ///
-/// Please report any panics to <https://github.com/dylanopen/realms/issues>
-#[expect(clippy::unwrap_used)]
+/// Please report any panics to <https://github.com/dylanopen/realms/issues>.
+#[expect(
+    clippy::unwrap_used,
+    reason = "This should be replaced with proper error returns on the next major release."
+)]
+#[expect(
+    clippy::module_name_repetitions,
+    reason = "Will be renamed to shader_2d in the next major release."
+)]
 #[inline]
+#[must_use]
 pub fn shape2d_shader() -> ShaderProgram {
     ShaderProgram::new(vec![
-        Shader::load_str(ShaderType::Vertex, include_str!("builtin_shaders/shape2d.vert.glsl")).unwrap(),
-        Shader::load_str(ShaderType::Fragment, include_str!("builtin_shaders/shape2d.frag.glsl")).unwrap(),
-    ]).unwrap()
+        Shader::load_str(
+            ShaderType::Vertex,
+            include_str!("builtin_shaders/shape2d.vert.glsl"),
+        )
+        .unwrap(),
+        Shader::load_str(
+            ShaderType::Fragment,
+            include_str!("builtin_shaders/shape2d.frag.glsl"),
+        )
+        .unwrap(),
+    ])
+    .unwrap()
 }
 
 /// The `TriangleShape` struct represents any 3 points in the 2d plane. Each
@@ -56,6 +75,10 @@ pub fn shape2d_shader() -> ShaderProgram {
 /// an easy way to create a certain type of triangle.
 /// For examples, please see the different functions that `TriangleShape`
 /// implements.
+#[expect(
+    clippy::module_name_repetitions,
+    reason = "Will be renamed to Triangle in the next major release."
+)]
 #[non_exhaustive]
 pub struct TriangleShape {
     /// Stores the `VertexBuffer` that represents the triangle.
@@ -85,6 +108,7 @@ impl TriangleShape {
     /// }
     /// ```
     #[inline]
+    #[must_use]
     pub fn new(vertices: &[f32; 15]) -> TriangleShape {
         let vertex_buffer = VertexBuffer::new(vertices, &[0, 1, 2]);
         vertex_buffer.set_layout(&[2_i32, 3_i32]);
@@ -116,19 +140,32 @@ impl TriangleShape {
     /// }
     /// ```
     #[inline]
+    #[must_use]
     pub fn new_solid(vertices: &[f32; 6], color: &Color) -> TriangleShape {
         let (r, g, b, _) = color.gl();
         TriangleShape::new(&[
-            vertices[0], vertices[1], r, g, b,
-            vertices[2], vertices[3], r, g, b,
-            vertices[4], vertices[5], r, g, b,
+            vertices[0],
+            vertices[1],
+            r,
+            g,
+            b,
+            vertices[2],
+            vertices[3],
+            r,
+            g,
+            b,
+            vertices[4],
+            vertices[5],
+            r,
+            g,
+            b,
         ])
     }
 
     /// Create a new `TriangleShape` as an isosceles triangle with a flat base.
     /// Isosceles triangles have two sides the same.
     /// The coordinates for the isosceles triangle are calculated like this:
-    /// 
+    ///
     /// 1. (`x`, `y`)
     /// 2. (`x+base`, `y`)
     /// 3. (`x+base*0.5`, `y+height`)
@@ -157,12 +194,18 @@ impl TriangleShape {
     /// }
     /// ```
     #[inline]
-    pub fn new_flat_isosceles(x: f32, y: f32, width: f32, height: f32, color: &Color) -> TriangleShape {
-        TriangleShape::new_solid(&[
-            x, y,
-            x + width, y,
-            width.mul_add(0.5, x), y + height,
-        ], color)
+    #[must_use]
+    pub fn new_flat_isosceles(
+        x: f32,
+        y: f32,
+        width: f32,
+        height: f32,
+        color: &Color,
+    ) -> TriangleShape {
+        TriangleShape::new_solid(
+            &[x, y, x + width, y, width.mul_add(0.5, x), y + height],
+            color,
+        )
     }
 
     /// Draw the triangle to the screen.
@@ -193,8 +236,6 @@ impl TriangleShape {
     }
 }
 
-
-
 /// The `RectangleShape` struct represents any 3 points in the 2d plane. Each
 /// point (vertex) is made up of:
 /// - 2 position components (x, y)
@@ -204,6 +245,10 @@ impl TriangleShape {
 /// an easy way to create a certain type of triangle.
 /// For examples, please see the different functions that `TriangleShape`
 /// implements.
+#[expect(
+    clippy::module_name_repetitions,
+    reason = "Will be renamed to Triangle in the next major release."
+)]
 #[non_exhaustive]
 pub struct RectangleShape {
     /// Stores the `VertexBuffer` that represents the triangle.
@@ -233,6 +278,7 @@ impl RectangleShape {
     /// }
     /// ```
     #[inline]
+    #[must_use]
     pub fn new(vertices: &[f32; 20]) -> RectangleShape {
         let vertex_buffer = VertexBuffer::new(vertices, &[0, 1, 2, 2, 3, 0]);
         vertex_buffer.set_layout(&[2_i32, 3_i32]);
@@ -265,17 +311,34 @@ impl RectangleShape {
     /// }
     /// ```
     #[inline]
+    #[must_use]
     pub fn new_solid(vertices: &[f32; 8], color: &Color) -> RectangleShape {
         let (r, g, b, _) = color.gl();
         RectangleShape::new(&[
-            vertices[0], vertices[1], r, g, b,
-            vertices[2], vertices[3], r, g, b,
-            vertices[4], vertices[5], r, g, b,
-            vertices[6], vertices[7], r, g, b,
+            vertices[0],
+            vertices[1],
+            r,
+            g,
+            b,
+            vertices[2],
+            vertices[3],
+            r,
+            g,
+            b,
+            vertices[4],
+            vertices[5],
+            r,
+            g,
+            b,
+            vertices[6],
+            vertices[7],
+            r,
+            g,
+            b,
         ])
     }
 
-    /// Create a new `RectangleShape` from an `x` position, `y` position, 
+    /// Create a new `RectangleShape` from an `x` position, `y` position,
     /// `width` and `height`.
     ///
     /// The coordinates for the rectangle are calculated like this:
@@ -287,15 +350,15 @@ impl RectangleShape {
     ///
     /// ## Parameters
     ///
-    /// - `x: f32` - the mininum (furthest left) X coordinate on the rectangle 
+    /// - `x: f32` - the mininum (furthest left) X coordinate on the rectangle
     /// - `y: f32` - the minimum (furhest down) Y coordinate on the rectangle
     /// - `width: f32` - the width of the rectangle (the difference in X
     ///   position between the furthest right point and the furthest left point)
     /// - `height: f32` - the height of the rectangle (the difference in Y
     ///   position between the highest point and the lowest point)
-    /// 
+    ///
     /// ## Example usage
-    /// 
+    ///
     /// ``` rust
     /// let shader = shape2d_shader();
     /// let rectangle = RectangleShape::new_flat(
@@ -308,13 +371,12 @@ impl RectangleShape {
     /// }
     /// ```
     #[inline]
+    #[must_use]
     pub fn new_flat(x: f32, y: f32, width: f32, height: f32, color: &Color) -> RectangleShape {
-        RectangleShape::new_solid(&[
-            x, y,
-            x + width, y,
-            x + width, y + height,
-            x, y + height
-        ], color)
+        RectangleShape::new_solid(
+            &[x, y, x + width, y, x + width, y + height, x, y + height],
+            color,
+        )
     }
 
     /// Draw the rectangle to the screen.
@@ -345,5 +407,3 @@ impl RectangleShape {
         self.vertex_buffer.draw(shader_program);
     }
 }
-
-

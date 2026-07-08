@@ -4,28 +4,40 @@
 /// The `Color` struct is used to represent an RGBA color.
 /// It stores the red, green, blue and alpha components as `u8`s.
 #[derive(Clone, Copy)]
-#[expect(clippy::exhaustive_structs, reason = "Colors will only ever consist of red, green blue and alpha")]
+#[expect(
+    clippy::exhaustive_structs,
+    reason = "Colors will only ever consist of red, green blue and alpha"
+)]
 pub struct Color {
-    /// The `red` component
+    /// The `red` component.
+    /// Represented as an integer between 0 (no red) to 255 (max red).
     pub r: u8,
 
-    /// The `green` component
+    /// The `green` component.
+    /// Represented as an integer between 0 (no green) to 255 (max green).
     pub g: u8,
 
-    /// The `blue` component
+    /// The `blue` component.
+    /// Represented as an integer between 0 (no blue) to 255 (max blue).
     pub b: u8,
 
-    /// The `alpha` (opacity) component
+    /// The `alpha` (opacity) component.
+    /// Represented as an integer between 0 (transparent) to 255 (fully opaque,
+    /// not transparent).
     pub a: u8,
 }
 
 impl Color {
-    
-    /// A const for representing the color black: 
-    pub const BLACK: Color = Color { r: 0, g: 0, b: 0, a: 255 };
+    /// A const for representing the color black:
+    pub const BLACK: Color = Color {
+        r: 0,
+        g: 0,
+        b: 0,
+        a: 255,
+    };
 
     /// Construct a `Color` object from the specified red, green, blue and alpha
-    /// (opacity) components.  
+    /// (opacity) components.\
     /// These components should be specified as a u8 value (between 0-255).
     ///
     /// ## Example usage
@@ -36,12 +48,13 @@ impl Color {
     /// let translucent_blue = Color::rgba(31, 127, 255, 100);
     /// ```
     #[inline]
+    #[must_use]
     pub const fn rgba(r: u8, g: u8, b: u8, a: u8) -> Color {
         Color { r, g, b, a }
     }
 
     /// Construct a `Color` object from the specified red, green and blue
-    /// components.  
+    /// components.\
     /// These components should be specified as a u8 value (between 0-255).
     ///
     /// Alpha (`a`) is assumed to be `255` (fully opaque).
@@ -80,10 +93,12 @@ impl Color {
     #[inline]
     #[must_use]
     pub fn gl(&self) -> (f32, f32, f32, f32) {
-        ( f32::from(self.r) / 255.0,
-          f32::from(self.g) / 255.0,
-          f32::from(self.b) / 255.0,
-          f32::from(self.a) / 255.0, )
+        (
+            f32::from(self.r) / 255.0,
+            f32::from(self.g) / 255.0,
+            f32::from(self.b) / 255.0,
+            f32::from(self.a) / 255.0,
+        )
     }
 }
 
@@ -93,4 +108,3 @@ impl Default for Color {
         Color::rgba(0, 0, 0, 255)
     }
 }
-

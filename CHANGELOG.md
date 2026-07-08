@@ -81,3 +81,10 @@ Non-breaking changes:
   - Add `RectangleShape::new_flat` function
   - Add `RectangleShape::draw` method
 
+## 3.5.4 -> 3.5.5 (patch)
+
+- Various internal improvements
+- Move examples to a place Cargo can find them (allow using `cargo run --example`)
+- Fix texture loading to support RGBA
+- Create example 5: texture
+- Add formatting checks to CI workflows
