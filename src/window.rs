@@ -24,26 +24,27 @@ use super::input::Event;
 /// almost unanimously shortened to `w`. Remember: `w` is the instance of the
 /// `Window` struct, created with `Window::new(...)`.
 pub struct Window {
-
     /// The instance of glfw. Used for things such as window hints and event
     /// polling each frame.
     glfw: glfw::Glfw,
 
     /// The glfw `PWindow` handler. The main interface for managing the glfw
     /// window.
-    #[expect(clippy::struct_field_names, reason = "needed to distinguish from glfw field")]
+    #[expect(
+        clippy::struct_field_names,
+        reason = "needed to distinguish from glfw field"
+    )]
     glfw_window: glfw::PWindow,
 
     /// The `GlfwReceiver` for getting window events using glfw. You don't ever
     /// need to read this field: to get events, use the public `events` field.
     glfw_events: glfw::GlfwReceiver<(f64, glfw::WindowEvent)>,
-
 }
 
 impl Window {
     /// Create a new instance of the `Window` struct with the specified
     /// `width`, `height` and `title`.
-    /// This method creates a glfw `PWindow` with some sane defaults. 
+    /// This method creates a glfw `PWindow` with some sane defaults.
     ///
     /// ## Errors
     ///
@@ -64,11 +65,14 @@ impl Window {
             .map_err(|err| format!("Realms: failed to initialise glfw: {err}"))?;
 
         glfw.window_hint(glfw::WindowHint::ContextVersion(3, 3));
-        glfw.window_hint(glfw::WindowHint::OpenGlProfile(glfw::OpenGlProfileHint::Core));
+        glfw.window_hint(glfw::WindowHint::OpenGlProfile(
+            glfw::OpenGlProfileHint::Core,
+        ));
         #[cfg(target_os = "macos")]
         glfw.window_hint(glfw::WindowHint::OpenGlForwardCompat(true));
 
-        let (mut glfw_window, glfw_events) = glfw.create_window(width, height, title, glfw::WindowMode::Windowed)
+        let (mut glfw_window, glfw_events) = glfw
+            .create_window(width, height, title, glfw::WindowMode::Windowed)
             .ok_or("Realms: failed to create glfw window")?;
 
         glfw_window.make_current();
@@ -184,8 +188,12 @@ impl Window {
     #[inline]
     pub fn fill(&mut self, color: Color) {
         let (r, g, b, a) = color.gl();
-        unsafe { gl::ClearColor(r, g, b, a); }
-        unsafe { gl::Clear(gl::COLOR_BUFFER_BIT); }
+        unsafe {
+            gl::ClearColor(r, g, b, a);
+        }
+        unsafe {
+            gl::Clear(gl::COLOR_BUFFER_BIT);
+        }
     }
 
     /// Returns a `Vec` of `Event`s gathered this frame. You should loop over
@@ -220,24 +228,34 @@ impl Window {
         }
         events
     }
-    
+
     /// A private function used internally.
     /// This function is called by `w.events()` and it handles certain events
     /// so the library user doesn't have to.
     ///
     /// - Its only current job is to resize the OpenGL viewport if the window is
     ///   resized.
-    #[expect(clippy::unused_self, reason = "this function will be used in the future and will require the self parameter")]
-    #[expect(clippy::needless_pass_by_ref_mut, reason = "in the future, the window's state may need to be updated")]
+    #[expect(
+        clippy::unused_self,
+        reason = "this function will be used in the future and will require the self parameter"
+    )]
+    #[expect(
+        clippy::needless_pass_by_ref_mut,
+        reason = "in the future, the window's state may need to be updated"
+    )]
     #[inline]
     fn handle_event(&mut self, event: &Event) {
-        #[expect(clippy::single_match, reason = "more events will be handled in the future")]
-        #[expect(clippy::wildcard_enum_match_arm, reason = "if more Events are added, we just want to ignore them")]
+        #[expect(
+            clippy::single_match,
+            reason = "more events will be handled in the future"
+        )]
+        #[expect(
+            clippy::wildcard_enum_match_arm,
+            reason = "if more Events are added, we just want to ignore them"
+        )]
         match *event {
-            Event::ResizeWindow(width, height)
-                => unsafe { gl::Viewport(0, 0, width, height) },
-            _ => {},
+            Event::ResizeWindow(width, height) => unsafe { gl::Viewport(0, 0, width, height) },
+            _ => {}
         };
     }
 }
-

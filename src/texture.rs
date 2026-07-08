@@ -4,7 +4,7 @@
 //! The main struct is the `Texture` struct.
 
 use core::ffi::c_void;
-use image::EncodableLayout;
+use image::EncodableLayout as _;
 
 /// This struct stores the opengl id for a given 2D texture.
 ///
@@ -25,55 +25,94 @@ impl Texture {
     /// Create a 2D `Texture` from the given slice of bytes.
     /// The texture is by default set to repeat when wrapping.
     ///
-    /// ## Errors 
-    /// 
+    /// ## Errors
+    ///
     /// If some garbage data overflows, an error will be returned.
     /// Otherwise, an `Ok` variant containing a `Texture` is returned. You can
     /// bind (enable) this `Texture` each frame using its `bind()` method.
-    #[expect(clippy::missing_inline_in_public_items, reason = "Long function, probably shouldn't be inlined for compile times and binary size reasons.")]
+    #[expect(
+        clippy::missing_inline_in_public_items,
+        reason = "Long function, probably shouldn't be inlined for compile times and binary size reasons."
+    )]
     pub fn load_bytes(width: u32, bytes: &[u8]) -> Result<Texture, String> {
         let mut gl_id = 0;
-        
-        unsafe { gl::GenTextures(1, &raw mut gl_id); }
-        unsafe { gl::BindTexture(gl::TEXTURE_2D, gl_id); }
-        #[expect(clippy::as_conversions, clippy::cast_possible_wrap, reason = "We are casting constants, impossible to cause issues.")]
-        unsafe { gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_S, gl::REPEAT as i32) };
-        #[expect(clippy::as_conversions, clippy::cast_possible_wrap, reason = "We are casting constants, impossible to cause issues.")]
-        unsafe { gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_T, gl::REPEAT as i32) };
-        #[expect(clippy::as_conversions, clippy::cast_possible_wrap, reason = "We are casting constants, impossible to cause issues.")]
-        unsafe { gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32) };
-        #[expect(clippy::as_conversions, clippy::cast_possible_wrap, reason = "We are casting constants, impossible to cause issues.")]
-        unsafe { gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32) };
 
         unsafe {
-            #[expect(clippy::borrow_as_ptr, clippy::indexing_slicing, clippy::as_conversions, reason = "can't find other way to specify pixels field")]
+            gl::GenTextures(1, &raw mut gl_id);
+        }
+        unsafe {
+            gl::BindTexture(gl::TEXTURE_2D, gl_id);
+        }
+        #[expect(
+            clippy::as_conversions,
+            clippy::cast_possible_wrap,
+            reason = "We are casting constants, impossible to cause issues."
+        )]
+        unsafe {
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_S, gl::REPEAT as i32)
+        };
+        #[expect(
+            clippy::as_conversions,
+            clippy::cast_possible_wrap,
+            reason = "We are casting constants, impossible to cause issues."
+        )]
+        unsafe {
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_T, gl::REPEAT as i32)
+        };
+        #[expect(
+            clippy::as_conversions,
+            clippy::cast_possible_wrap,
+            reason = "We are casting constants, impossible to cause issues."
+        )]
+        unsafe {
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32)
+        };
+        #[expect(
+            clippy::as_conversions,
+            clippy::cast_possible_wrap,
+            reason = "We are casting constants, impossible to cause issues."
+        )]
+        unsafe {
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32)
+        };
+
+        unsafe {
+            #[expect(
+                clippy::borrow_as_ptr,
+                clippy::indexing_slicing,
+                clippy::as_conversions,
+                reason = "can't find other way to specify pixels field"
+            )]
             gl::TexImage2D(
                 gl::TEXTURE_2D,
                 0,
-                gl::RGB.try_into()
+                gl::RGB
+                    .try_into()
                     .map_err(|_e| "gl::RGB returned garbage data which overflowed")?,
-                width.try_into()
+                width
+                    .try_into()
                     .map_err(|_e| "image width too large, led to overflow")?,
-                width.try_into()
+                width
+                    .try_into()
                     .map_err(|_e| "image width too large, led to overflow")?,
                 0,
                 gl::RGBA,
                 gl::UNSIGNED_BYTE,
-                (&bytes[0] as *const u8).cast::<c_void>()
+                (&bytes[0] as *const u8).cast::<c_void>(),
             );
         };
-        unsafe { gl::GenerateMipmap(gl::TEXTURE_2D); };
+        unsafe {
+            gl::GenerateMipmap(gl::TEXTURE_2D);
+        };
 
-        Ok(Texture {
-            gl_id
-        })
+        Ok(Texture { gl_id })
     }
 
     /// Create a 2D `Texture` from the given filepath.
     /// The texture is by default set to repeat when wrapping.
     ///
-    /// ## Errors 
-    /// 
+    /// ## Errors
+    ///
     /// If the file does not exist or cannot be opened, an `Err` variant
     /// containing a string of what went wrong is returned.
     /// If some garbage data overflows, a different error will be returned.
@@ -120,7 +159,8 @@ impl Texture {
     /// ```
     #[inline]
     pub fn bind(&self) {
-        unsafe { gl::BindTexture(gl::TEXTURE_2D, self.gl_id); }
+        unsafe {
+            gl::BindTexture(gl::TEXTURE_2D, self.gl_id);
+        }
     }
 }
-

@@ -10,11 +10,13 @@ use gl::types::{GLchar, GLint};
 
 /// Enum storing the type of shader and its associated opengl integer.
 /// You should pass a variant of `ShaderType` when creating a `Shader`.
-#[expect(clippy::module_name_repetitions, reason = "ShaderType is more descriptive; and may be used without absolute path.")]
+#[expect(
+    clippy::module_name_repetitions,
+    reason = "ShaderType is more descriptive; and may be used without absolute path."
+)]
 #[repr(u32)]
 #[non_exhaustive]
 pub enum ShaderType {
-
     /// `Vertex` shaders alter the *position* of vertices.
     /// For example, a vertex shader could double the size of a shape by
     /// doubling each coordinate, or be used to animate objects (e.g. trees
@@ -24,7 +26,7 @@ pub enum ShaderType {
     /// coordinates stored the `VertexBuffer` (but as a 3D vertex, a `vec4`)
     /// can be found in example 3, at
     /// <https://github.com/dylanopen/realms/tree/main/examples/example3_colorful_triangle/src/vertex.glsl>.
-    /// 
+    ///
     /// Read more: <https://www.khronos.org/opengl/wiki/Vertex_Shader>.
     Vertex = gl::VERTEX_SHADER,
 
@@ -43,7 +45,7 @@ pub enum ShaderType {
 /// A wrapper around an opengl shader.
 /// This struct currently only stores the opengl reference to the shader, but
 /// is provided as a convenient wrapper for creating shaders from their source.
-/// 
+///
 /// NOTE: `Shader`s do nothing unless added to a `ShaderProgram`.
 ///
 /// NOTE: When the shader is added to a `ShaderProgram`, the shader is deleted.
@@ -65,7 +67,6 @@ pub enum ShaderType {
 /// ```
 #[non_exhaustive]
 pub struct Shader {
-
     /// The opengl reference id to the shader (as a standard C integer).
     /// This is used to link the vertex, fragment, etc. shaders together using
     /// an opengl function by a `ShaderProgram` class.
@@ -103,34 +104,53 @@ impl Shader {
     /// code for the shader (`source` parameter) as `&str` rather than `String`.
     /// To fix this, you likely just need to remove the `.to_string()` call to
     /// the shader source string, or add a `.as_str()` call.
-    #[expect(clippy::uninit_vec, reason = "I can't find a way to fix this lint, please make a PR/issue if you know the solution")]
+    #[expect(
+        clippy::uninit_vec,
+        reason = "I can't find a way to fix this lint, please make a PR/issue if you know the solution"
+    )]
     #[inline]
     pub fn load_str(shader_type: ShaderType, source: &str) -> Result<Shader, String> {
-        #[expect(clippy::as_conversions, reason = "no other way to get integral value of enum variant")]
-        let gl_id = unsafe {gl::CreateShader(shader_type as u32)};
+        #[expect(
+            clippy::as_conversions,
+            reason = "no other way to get integral value of enum variant"
+        )]
+        let gl_id = unsafe { gl::CreateShader(shader_type as u32) };
         let c_source = CString::new(source.as_bytes())
             .map_err(|err| format!("Realms: failed to create CString from shader source: {err}"))?;
-        unsafe {gl::ShaderSource(gl_id, 1, &c_source.as_ptr(), ptr::null());}
-        unsafe {gl::CompileShader(gl_id);}
+        unsafe {
+            gl::ShaderSource(gl_id, 1, &c_source.as_ptr(), ptr::null());
+        }
+        unsafe {
+            gl::CompileShader(gl_id);
+        }
 
         let mut success = GLint::from(gl::FALSE);
         let mut info_log: Vec<u8> = Vec::with_capacity(1024);
-        unsafe {info_log.set_len(1024 - 1);} // -1 to skip trailing \0
-        unsafe {gl::GetShaderiv(gl_id, gl::COMPILE_STATUS, &raw mut success);}
+        unsafe {
+            info_log.set_len(1024 - 1);
+        } // -1 to skip trailing \0
+        unsafe {
+            gl::GetShaderiv(gl_id, gl::COMPILE_STATUS, &raw mut success);
+        }
         if success != GLint::from(gl::TRUE) {
-            unsafe {gl::GetShaderInfoLog(
-                gl_id, 1024, ptr::null_mut(),
-                info_log.as_mut_ptr().cast::<GLchar>()
-            );};
+            unsafe {
+                gl::GetShaderInfoLog(
+                    gl_id,
+                    1024,
+                    ptr::null_mut(),
+                    info_log.as_mut_ptr().cast::<GLchar>(),
+                );
+            };
             let gl_error = String::from_utf8_lossy(&info_log);
-            let gl_error = gl_error.split_once('\0')
-                .ok_or("Realms: received malformed shader compile error info from opengl")?.0;
+            let gl_error = gl_error
+                .split_once('\0')
+                .ok_or("Realms: received malformed shader compile error info from opengl")?
+                .0;
 
             return Err(format!("Realms: failed to compile shader: {gl_error}"));
         }
 
         Ok(Shader { gl_id })
-
     }
 }
 
@@ -140,10 +160,12 @@ impl Shader {
 /// program.
 /// It is provided as a convenient wrapper for creating a shader program from
 /// a vector of `Shader` objects.
-#[expect(clippy::module_name_repetitions, reason = "ShaderProgram is more descriptive; and may be used without absolute path.")]
+#[expect(
+    clippy::module_name_repetitions,
+    reason = "ShaderProgram is more descriptive; and may be used without absolute path."
+)]
 #[non_exhaustive]
 pub struct ShaderProgram {
-
     /// The opengl reference id to the shader program (as a standard C integer).
     /// This is used to `use` the shader program on each frame with the
     /// `gl::UseProgram` function called by the `new_frame` function.
@@ -155,7 +177,6 @@ pub struct ShaderProgram {
 }
 
 impl ShaderProgram {
-
     /// A default `ShaderProgram` for when you want to *unbind* the current
     /// shader.
     /// Its uses are to unbind a shader (if you don't want to use any shader)
@@ -164,7 +185,7 @@ impl ShaderProgram {
     ///
     /// For an example of using the `NONE` shader, see *example 1: window*:
     /// <https://github.com/dylanopen/realms/tree/main/examples/example1_window>.
-    pub const NONE: ShaderProgram = ShaderProgram { gl_id: 0 }; 
+    pub const NONE: ShaderProgram = ShaderProgram { gl_id: 0 };
 
     /// Load and compile an opengl shader **program** from the given `Vec` of
     /// `Shader`s.
@@ -199,12 +220,20 @@ impl ShaderProgram {
     /// let f_shader = Shader::load_str(ShaderType::Fragment, f_shader_src).unwrap();
     /// let program = ShaderProgram::new(vec![v_shader, f_shader]).unwrap();
     /// ```
-    #[expect(clippy::needless_pass_by_value, reason = "the caller shouldn't be able to mutate the shaders after building the shader program")]
+    #[expect(
+        clippy::needless_pass_by_value,
+        reason = "the caller shouldn't be able to mutate the shaders after building the shader program"
+    )]
     #[inline]
     pub fn new(shaders: Vec<Shader>) -> Result<ShaderProgram, String> {
-
-        #[expect(clippy::multiple_unsafe_ops_per_block, reason = "will fix when I have time; feel free to open a PR")]
-        #[expect(clippy::uninit_vec, reason = "we should add MaybeUninit wrapper to info_log in the future")]
+        #[expect(
+            clippy::multiple_unsafe_ops_per_block,
+            reason = "will fix when I have time; feel free to open a PR"
+        )]
+        #[expect(
+            clippy::uninit_vec,
+            reason = "we should add MaybeUninit wrapper to info_log in the future"
+        )]
         let gl_id = unsafe {
             let gl_id = gl::CreateProgram();
             for shader in &shaders {
@@ -220,12 +249,18 @@ impl ShaderProgram {
                 #[expect(clippy::as_conversions, reason = "need to cast mut ptr -> *mut GLchar")]
                 #[expect(clippy::ptr_as_ptr, reason = "need to cast mut ptr -> *mut GLchar")]
                 gl::GetProgramInfoLog(
-                    gl_id, 1024, ptr::null_mut(),
-                    info_log.as_mut_ptr() as *mut GLchar
+                    gl_id,
+                    1024,
+                    ptr::null_mut(),
+                    info_log.as_mut_ptr() as *mut GLchar,
                 );
-                #[expect(clippy::absolute_paths, reason = "importing the `str` module would clash with the `str` type")]
-                return Err(format!("Realms: failed to link shader program: {}",
-                        core::str::from_utf8(&info_log).map_err(|e| e.to_string())?
+                #[expect(
+                    clippy::absolute_paths,
+                    reason = "importing the `str` module would clash with the `str` type"
+                )]
+                return Err(format!(
+                    "Realms: failed to link shader program: {}",
+                    core::str::from_utf8(&info_log).map_err(|e| e.to_string())?
                 ));
             }
             for shader in &shaders {
@@ -233,9 +268,8 @@ impl ShaderProgram {
             }
             gl_id
         };
-        
-        Ok(ShaderProgram { gl_id })
 
+        Ok(ShaderProgram { gl_id })
     }
 
     /// Bind (use) the shader.
@@ -262,13 +296,15 @@ impl ShaderProgram {
     ///
     /// The name of this method changed in version `3.3.4` from `new_frame` to
     /// `bind`. Nothing else about this method has changed, only its name.
-    /// 
+    ///
     /// However, the usage has changed. While this method used to be called by
     /// the `Window::new_frame` method, it is no longer called by that method
     /// but instead is called by the `VertexBuffer::draw` method.
     #[inline]
     pub fn bind(&self) {
-        unsafe { gl::UseProgram(self.gl_id); }
+        unsafe {
+            gl::UseProgram(self.gl_id);
+        }
     }
 
     /// Upload a single float to the shader as a uniform.
@@ -280,9 +316,16 @@ impl ShaderProgram {
     /// this function will PANIC as it unwraps a `Result`.
     #[inline]
     pub fn uniform_1f(&self, uniform_name: &str, data: f32) {
-        #[expect(clippy::unwrap_used, reason = "it is very rare that the library user will pass a `&str` that cannot be converted to a `CString`")]
-        let location = unsafe { gl::GetUniformLocation(self.gl_id, CString::new(uniform_name).unwrap().as_ptr()) };
-        unsafe {gl::Uniform1f(location, data);}
+        #[expect(
+            clippy::unwrap_used,
+            reason = "it is very rare that the library user will pass a `&str` that cannot be converted to a `CString`"
+        )]
+        let location = unsafe {
+            gl::GetUniformLocation(self.gl_id, CString::new(uniform_name).unwrap().as_ptr())
+        };
+        unsafe {
+            gl::Uniform1f(location, data);
+        }
     }
 
     /// Upload a vec2 of floats to the shader as a uniform.
@@ -294,9 +337,16 @@ impl ShaderProgram {
     /// this function will PANIC as it unwraps a `Result`.
     #[inline]
     pub fn uniform_2f(&self, uniform_name: &str, data: (f32, f32)) {
-        #[expect(clippy::unwrap_used, reason = "it is very rare that the library user will pass a `&str` that cannot be converted to a `CString`")]
-        let location = unsafe { gl::GetUniformLocation(self.gl_id, CString::new(uniform_name).unwrap().as_ptr()) };
-        unsafe {gl::Uniform2f(location, data.0, data.1);}
+        #[expect(
+            clippy::unwrap_used,
+            reason = "it is very rare that the library user will pass a `&str` that cannot be converted to a `CString`"
+        )]
+        let location = unsafe {
+            gl::GetUniformLocation(self.gl_id, CString::new(uniform_name).unwrap().as_ptr())
+        };
+        unsafe {
+            gl::Uniform2f(location, data.0, data.1);
+        }
     }
 
     /// Upload a vec3 of floats to the shader as a uniform.
@@ -308,9 +358,16 @@ impl ShaderProgram {
     /// this function will PANIC as it unwraps a `Result`.
     #[inline]
     pub fn uniform_3f(&self, uniform_name: &str, data: (f32, f32, f32)) {
-        #[expect(clippy::unwrap_used, reason = "it is very rare that the library user will pass a `&str` that cannot be converted to a `CString`")]
-        let location = unsafe { gl::GetUniformLocation(self.gl_id, CString::new(uniform_name).unwrap().as_ptr()) };
-        unsafe {gl::Uniform3f(location, data.0, data.1, data.2);}
+        #[expect(
+            clippy::unwrap_used,
+            reason = "it is very rare that the library user will pass a `&str` that cannot be converted to a `CString`"
+        )]
+        let location = unsafe {
+            gl::GetUniformLocation(self.gl_id, CString::new(uniform_name).unwrap().as_ptr())
+        };
+        unsafe {
+            gl::Uniform3f(location, data.0, data.1, data.2);
+        }
     }
 
     /// Upload a vec4 of floats to the shader as a uniform.
@@ -322,9 +379,16 @@ impl ShaderProgram {
     /// this function will PANIC as it unwraps a `Result`.
     #[inline]
     pub fn uniform_4f(&self, uniform_name: &str, data: (f32, f32, f32, f32)) {
-        #[expect(clippy::unwrap_used, reason = "it is very rare that the library user will pass a `&str` that cannot be converted to a `CString`")]
-        let location = unsafe { gl::GetUniformLocation(self.gl_id, CString::new(uniform_name).unwrap().as_ptr()) };
-        unsafe {gl::Uniform4f(location, data.0, data.1, data.2, data.3);}
+        #[expect(
+            clippy::unwrap_used,
+            reason = "it is very rare that the library user will pass a `&str` that cannot be converted to a `CString`"
+        )]
+        let location = unsafe {
+            gl::GetUniformLocation(self.gl_id, CString::new(uniform_name).unwrap().as_ptr())
+        };
+        unsafe {
+            gl::Uniform4f(location, data.0, data.1, data.2, data.3);
+        }
     }
 
     /// Upload a single integer (i32) to the shader as a uniform.
@@ -336,9 +400,16 @@ impl ShaderProgram {
     /// this function will PANIC as it unwraps a `Result`.
     #[inline]
     pub fn uniform_1i(&self, uniform_name: &str, data: i32) {
-        #[expect(clippy::unwrap_used, reason = "it is very rare that the library user will pass a `&str` that cannot be converted to a `CString`")]
-        let location = unsafe { gl::GetUniformLocation(self.gl_id, CString::new(uniform_name).unwrap().as_ptr()) };
-        unsafe {gl::Uniform1i(location, data);}
+        #[expect(
+            clippy::unwrap_used,
+            reason = "it is very rare that the library user will pass a `&str` that cannot be converted to a `CString`"
+        )]
+        let location = unsafe {
+            gl::GetUniformLocation(self.gl_id, CString::new(uniform_name).unwrap().as_ptr())
+        };
+        unsafe {
+            gl::Uniform1i(location, data);
+        }
     }
 
     /// Upload a vec2 of integers (i32s) to the shader as a uniform.
@@ -350,9 +421,16 @@ impl ShaderProgram {
     /// this function will PANIC as it unwraps a `Result`.
     #[inline]
     pub fn uniform_2i(&self, uniform_name: &str, data: (i32, i32)) {
-        #[expect(clippy::unwrap_used, reason = "it is very rare that the library user will pass a `&str` that cannot be converted to a `CString`")]
-        let location = unsafe { gl::GetUniformLocation(self.gl_id, CString::new(uniform_name).unwrap().as_ptr()) };
-        unsafe {gl::Uniform2i(location, data.0, data.1);}
+        #[expect(
+            clippy::unwrap_used,
+            reason = "it is very rare that the library user will pass a `&str` that cannot be converted to a `CString`"
+        )]
+        let location = unsafe {
+            gl::GetUniformLocation(self.gl_id, CString::new(uniform_name).unwrap().as_ptr())
+        };
+        unsafe {
+            gl::Uniform2i(location, data.0, data.1);
+        }
     }
 
     /// Upload a vec3 of integers (i32s) to the shader as a uniform.
@@ -364,9 +442,16 @@ impl ShaderProgram {
     /// this function will PANIC as it unwraps a `Result`.
     #[inline]
     pub fn uniform_3i(&self, uniform_name: &str, data: (i32, i32, i32)) {
-        #[expect(clippy::unwrap_used, reason = "it is very rare that the library user will pass a `&str` that cannot be converted to a `CString`")]
-        let location = unsafe { gl::GetUniformLocation(self.gl_id, CString::new(uniform_name).unwrap().as_ptr()) };
-        unsafe {gl::Uniform3i(location, data.0, data.1, data.2);}
+        #[expect(
+            clippy::unwrap_used,
+            reason = "it is very rare that the library user will pass a `&str` that cannot be converted to a `CString`"
+        )]
+        let location = unsafe {
+            gl::GetUniformLocation(self.gl_id, CString::new(uniform_name).unwrap().as_ptr())
+        };
+        unsafe {
+            gl::Uniform3i(location, data.0, data.1, data.2);
+        }
     }
 
     /// Upload a vec4 of integers (i32s) to the shader as a uniform.
@@ -378,9 +463,15 @@ impl ShaderProgram {
     /// this function will PANIC as it unwraps a `Result`.
     #[inline]
     pub fn uniform_4i(&self, uniform_name: &str, data: (i32, i32, i32, i32)) {
-        #[expect(clippy::unwrap_used, reason = "it is very rare that the library user will pass a `&str` that cannot be converted to a `CString`")]
-        let location = unsafe { gl::GetUniformLocation(self.gl_id, CString::new(uniform_name).unwrap().as_ptr()) };
-        unsafe {gl::Uniform4i(location, data.0, data.1, data.2, data.3);}
+        #[expect(
+            clippy::unwrap_used,
+            reason = "it is very rare that the library user will pass a `&str` that cannot be converted to a `CString`"
+        )]
+        let location = unsafe {
+            gl::GetUniformLocation(self.gl_id, CString::new(uniform_name).unwrap().as_ptr())
+        };
+        unsafe {
+            gl::Uniform4i(location, data.0, data.1, data.2, data.3);
+        }
     }
 }
-

@@ -8,35 +8,33 @@
 // example. This example builds upon example 3.
 // <https://github.com/dylanopen/realms/tree/main/examples/example3_colorful_triangle>
 
+use realms::data::Color;
 use realms::input::{Event, Key};
+use realms::shader::{Shader, ShaderProgram, ShaderType};
 use realms::vertex::VertexBuffer;
 use realms::window::Window;
-use realms::data::Color;
-use realms::shader::{Shader, ShaderProgram, ShaderType};
 
 fn main() {
-    let mut window = Window::new(800, 600, "We Have A Camera?")
-        .expect("Failed to create window");
+    let mut window = Window::new(800, 600, "We Have A Camera?").expect("Failed to create window");
 
     let shader_program = ShaderProgram::new(vec![
         Shader::load_str(ShaderType::Vertex, include_str!("shaders/vertex4.glsl")).unwrap(),
         Shader::load_str(ShaderType::Fragment, include_str!("shaders/fragment4.glsl")).unwrap(),
-    ]).unwrap();
+    ])
+    .unwrap();
     // NOTE: the vertex shader has  changed since example 3. Please update
     // `vertex2.glsl` using the new versions of it in this directory.
     // The fragment shader has stayed the same.
 
     // all vertices are the same as in the last example
     let vertices: [f32; 15] = [
-    //   X     Y     red green blue
-         0.0,  0.5,  0.0, 1.0, 0.0,  // top of triangle, green
-        -0.5, -0.5,  1.0, 0.0, 0.0,  // bottom left of triangle, red
-         0.5, -0.5,  0.0, 0.0, 1.0,  // bottom right of triangle, blue
+        //   X     Y     red green blue
+        0.0, 0.5, 0.0, 1.0, 0.0, // top of triangle, green
+        -0.5, -0.5, 1.0, 0.0, 0.0, // bottom left of triangle, red
+        0.5, -0.5, 0.0, 0.0, 1.0, // bottom right of triangle, blue
     ];
 
-    let elements: [u32; 3] = [
-        0, 1, 2,
-    ];
+    let elements: [u32; 3] = [0, 1, 2];
 
     let vb = VertexBuffer::new(&vertices, &elements);
 
@@ -49,7 +47,7 @@ fn main() {
         window.new_frame();
         window.fill(Color::rgb(20, 34, 40));
 
-// --- NEW --- //
+        // --- NEW --- //
         for event in window.events() {
             match event {
                 // here, we don't store the current state of the key, so we
@@ -64,8 +62,8 @@ fn main() {
         // upload the camera position to the vertex shader using a *uniform*:
         // learn more: https://thebookofshaders.com/03/
         shader_program.uniform_2f("cameraPos", (camera_x, camera_y));
-// --- END NEW --- //
-        
+        // --- END NEW --- //
+
         vb.draw(&shader_program); // draw the data in our vertex buffer
     }
 }
@@ -74,4 +72,3 @@ fn main() {
 // what we would expect (e.g. pressing 'left' moves the triangle right).
 // This is because we are moving the camera, which direction opposes that of
 // the shapes it views.
-

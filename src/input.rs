@@ -27,7 +27,6 @@ use std::path::PathBuf;
 #[derive(Debug)]
 #[non_exhaustive]
 pub enum Event {
-    
     /// The user has closed the window.
     Close,
 
@@ -54,7 +53,6 @@ pub enum Event {
     /// - $1: the new **width** of the window.
     /// - $2: the new **height** of the window.
     ResizeWindow(i32, i32),
-
 
     /// The window was moved/relocated.
     /// This event is rarely used. However, it can be used in some situations
@@ -124,7 +122,7 @@ pub enum Event {
     /// The specified `MouseButton` was pressed **down**.
     /// This event is called when the user pressed down one of the mouse
     /// buttons.
-    /// 
+    ///
     /// ## Parameters:
     /// - $1: the `MouseButton` that was pressed. Can be `Left`, `Right` or
     ///   `Middle`. See the `MouseButton` enum for more info.
@@ -133,7 +131,7 @@ pub enum Event {
     /// The specified `MouseButton` was **released**
     /// This event is called when the user stops pressing down one of the mouse
     /// buttons.
-    /// 
+    ///
     /// ## Parameters:
     /// - $1: the `MouseButton` that was released. Can be `Left`, `Right`,
     ///   `Middle` or `Other`. See the `MouseButton` enum for more info.
@@ -141,7 +139,7 @@ pub enum Event {
 
     /// An event that is supported by glfw but not currently supported by
     /// Realms.
-    /// 
+    ///
     /// > Important note: if, in the future, Realms adds a feature you previously
     /// > used the `Other` variant for, it will no longer be matched to `Other`.
     /// > If this event is not being handled after a Realms upgrade, check if
@@ -153,44 +151,48 @@ pub enum Event {
 }
 
 impl Event {
-    
     /// Convert a `glfw::WindowEvent` into a `realms::Event`.
     /// You don't need to call this method: it is public only so that
     /// `window.events()` can convert the glfw events into Realms events.
     #[inline]
     #[must_use]
     pub fn from_glfw(glfw_event: glfw::WindowEvent) -> Event {
-        #[expect(clippy::wildcard_enum_match_arm, reason = "if more WindowEvent variants are added to glfw, we still want to ignore them (for now at least)")]
+        #[expect(
+            clippy::wildcard_enum_match_arm,
+            reason = "if more WindowEvent variants are added to glfw, we still want to ignore them (for now at least)"
+        )]
         match glfw_event {
-            glfw::WindowEvent::Close
-                => Event::Close,
+            glfw::WindowEvent::Close => Event::Close,
 
-            glfw::WindowEvent::Refresh
-                => Event::RefreshWindow,
+            glfw::WindowEvent::Refresh => Event::RefreshWindow,
 
-            glfw::WindowEvent::FramebufferSize(width, height)
-                => Event::ResizeWindow(width, height),
+            glfw::WindowEvent::FramebufferSize(width, height) => Event::ResizeWindow(width, height),
 
-            glfw::WindowEvent::Pos(x, y)
-                => Event::MoveWindow(x, y),
+            glfw::WindowEvent::Pos(x, y) => Event::MoveWindow(x, y),
 
-            glfw::WindowEvent::Char(ch)
-                => Event::TypeChar(ch),
+            glfw::WindowEvent::Char(ch) => Event::TypeChar(ch),
 
-            glfw::WindowEvent::Scroll(scroll_x, scroll_y)
-                => Event::Scroll(scroll_x, scroll_y),
+            glfw::WindowEvent::Scroll(scroll_x, scroll_y) => Event::Scroll(scroll_x, scroll_y),
 
-            glfw::WindowEvent::FileDrop(file_bufs)
-                => Event::DropFiles(file_bufs),
+            glfw::WindowEvent::FileDrop(file_bufs) => Event::DropFiles(file_bufs),
 
-            glfw::WindowEvent::CursorPos(x, y)
-                => Event::MoveMouse(x, y),
+            glfw::WindowEvent::CursorPos(x, y) => Event::MoveMouse(x, y),
 
-            glfw::WindowEvent::Focus(is_focused)
-                => if is_focused { Event::Focus } else {Event::Unfocus}
+            glfw::WindowEvent::Focus(is_focused) => {
+                if is_focused {
+                    Event::Focus
+                } else {
+                    Event::Unfocus
+                }
+            }
 
-            glfw::WindowEvent::CursorEnter(just_entered)
-                => if just_entered { Event::CursorEnter } else { Event::CursorExit }
+            glfw::WindowEvent::CursorEnter(just_entered) => {
+                if just_entered {
+                    Event::CursorEnter
+                } else {
+                    Event::CursorExit
+                }
+            }
 
             glfw::WindowEvent::MouseButton(glfw_mouse_button, action, _) => {
                 let mouse_button = MouseButton::from_glfw(glfw_mouse_button);
@@ -208,7 +210,7 @@ impl Event {
                     glfw::Action::Release => Event::KeyUp(key),
                     glfw::Action::Repeat => Event::KeyRepeat(key),
                 }
-            },
+            }
 
             _ => Event::Other(glfw_event),
         }
@@ -220,7 +222,6 @@ impl Event {
 #[derive(Debug)]
 #[non_exhaustive]
 pub enum MouseButton {
-
     /// The *left* mouse button. This may change depending on the user's
     /// system settings (some people swap round the left and right buttons).
     Left,
@@ -245,9 +246,15 @@ impl MouseButton {
     /// `Event::from_glfw` to convert a glfw mouse event into a realms mouse
     /// event.
     #[inline]
-    #[expect(clippy::single_call_fn, reason = "Separating this internal, unsafe behaviour helps keep the code more concise. Also, this is likely to cause memory bugs, so is a single unsafe function.")]
+    #[expect(
+        clippy::single_call_fn,
+        reason = "Separating this internal, unsafe behaviour helps keep the code more concise. Also, this is likely to cause memory bugs, so is a single unsafe function."
+    )]
     const fn from_glfw(glfw_mouse_button: glfw::MouseButton) -> MouseButton {
-        #[expect(clippy::wildcard_enum_match_arm, reason = "if more variants are added, we still want to ignore them")]
+        #[expect(
+            clippy::wildcard_enum_match_arm,
+            reason = "if more variants are added, we still want to ignore them"
+        )]
         match glfw_mouse_button {
             glfw::MouseButton::Button1 => MouseButton::Left,
             glfw::MouseButton::Button2 => MouseButton::Right,
@@ -265,7 +272,6 @@ impl MouseButton {
 #[derive(Debug)]
 #[non_exhaustive]
 pub enum Key {
-
     /// The `SPACE` key. Has the keycode `32`.
     Space = 32,
 
@@ -666,11 +672,18 @@ impl Key {
     /// This function is known to SEGFAULT if the key is not known by the glfw
     /// ffi bindings. If your code crashes upon pressing a specific key, this
     /// is why, and you may need to add its keycode to the [`Key`] enum.
-    #[expect(clippy::single_call_fn, reason = "Separating this internal, unsafe behaviour helps keep the code more concise. Also, this is likely to cause memory bugs, so is a single unsafe function.")]
+    #[expect(
+        clippy::single_call_fn,
+        reason = "Separating this internal, unsafe behaviour helps keep the code more concise. Also, this is likely to cause memory bugs, so is a single unsafe function."
+    )]
     const unsafe fn from_glfw(glfw_key: glfw::Key) -> Key {
         use core::mem;
-        #[expect(clippy::as_conversions, reason = "can't find a way other than `as` to convert an enum variant to its respective integer")]
-        unsafe { mem::transmute(glfw_key as usize) }
+        #[expect(
+            clippy::as_conversions,
+            reason = "can't find a way other than `as` to convert an enum variant to its respective integer"
+        )]
+        unsafe {
+            mem::transmute(glfw_key as usize)
+        }
     }
 }
-

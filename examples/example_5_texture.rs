@@ -3,33 +3,32 @@
 // This example assumes you have also read example 3: triangle.
 // Many things are not explained here as they were explained in that example.
 
-use realms::vertex::VertexBuffer;
-use realms::window::Window;
 use realms::data::Color;
 use realms::shader::{Shader, ShaderProgram, ShaderType};
 use realms::texture::Texture;
+use realms::vertex::VertexBuffer;
+use realms::window::Window;
 
 fn main() {
-    let mut window = Window::new(600, 600, "Rendering Pictures?!")
-        .expect("Failed to create window");
+    let mut window =
+        Window::new(600, 600, "Rendering Pictures?!").expect("Failed to create window");
 
     let shader_program = ShaderProgram::new(vec![
         Shader::load_str(ShaderType::Vertex, include_str!("shaders/vertex5.glsl")).unwrap(),
         Shader::load_str(ShaderType::Fragment, include_str!("shaders/fragment5.glsl")).unwrap(),
-    ]).unwrap();
+    ])
+    .unwrap();
 
-    let vertices: [f32; 16] = [ // specify type `f32` with 16 elements: 4 vertices * 4 floats each.
-//        X     Y    texX texY
-        -0.5,  0.5,  0.0, 1.0,  // top left of triangle, top left of texture
-        -0.5, -0.5,  0.0, 0.0,  // bottom left of triangle, bottom left of texture
-         0.5, -0.5,  1.0, 0.0, // bottom right of triangle, bottom right of texture
-         0.5,  0.5,  1.0, 1.0,  // top right of triangle, top right of texture
+    let vertices: [f32; 16] = [
+        // specify type `f32` with 16 elements: 4 vertices * 4 floats each.
+        //        X     Y    texX texY
+        -0.5, 0.5, 0.0, 1.0, // top left of triangle, top left of texture
+        -0.5, -0.5, 0.0, 0.0, // bottom left of triangle, bottom left of texture
+        0.5, -0.5, 1.0, 0.0, // bottom right of triangle, bottom right of texture
+        0.5, 0.5, 1.0, 1.0, // top right of triangle, top right of texture
     ];
 
-    let elements: [u32; 6] = [
-        0, 1, 2,
-        2, 3, 0,
-    ];
+    let elements: [u32; 6] = [0, 1, 2, 2, 3, 0];
 
     let vb = VertexBuffer::new(&vertices, &elements);
 

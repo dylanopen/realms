@@ -4,7 +4,10 @@
 /// The `Color` struct is used to represent an RGBA color.
 /// It stores the red, green, blue and alpha components as `u8`s.
 #[derive(Clone, Copy)]
-#[expect(clippy::exhaustive_structs, reason = "Colors will only ever consist of red, green blue and alpha")]
+#[expect(
+    clippy::exhaustive_structs,
+    reason = "Colors will only ever consist of red, green blue and alpha"
+)]
 pub struct Color {
     /// The `red` component.
     /// Represented as an integer between 0 (no red) to 255 (max red).
@@ -25,9 +28,13 @@ pub struct Color {
 }
 
 impl Color {
-    
-    /// A const for representing the color black: 
-    pub const BLACK: Color = Color { r: 0, g: 0, b: 0, a: 255 };
+    /// A const for representing the color black:
+    pub const BLACK: Color = Color {
+        r: 0,
+        g: 0,
+        b: 0,
+        a: 255,
+    };
 
     /// Construct a `Color` object from the specified red, green, blue and alpha
     /// (opacity) components.\
@@ -86,10 +93,12 @@ impl Color {
     #[inline]
     #[must_use]
     pub fn gl(&self) -> (f32, f32, f32, f32) {
-        ( f32::from(self.r) / 255.0,
-          f32::from(self.g) / 255.0,
-          f32::from(self.b) / 255.0,
-          f32::from(self.a) / 255.0, )
+        (
+            f32::from(self.r) / 255.0,
+            f32::from(self.g) / 255.0,
+            f32::from(self.b) / 255.0,
+            f32::from(self.a) / 255.0,
+        )
     }
 }
 
@@ -99,4 +108,3 @@ impl Default for Color {
         Color::rgba(0, 0, 0, 255)
     }
 }
-

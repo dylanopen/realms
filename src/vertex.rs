@@ -8,8 +8,8 @@
 //! works best for your program: Realms does not thrust a certain method
 //! of vertex data storage upon users.
 
-use core::ffi::c_void;
 use core::convert;
+use core::ffi::c_void;
 use core::mem;
 use core::ptr;
 
@@ -31,9 +31,11 @@ use crate::shader::ShaderProgram;
 ///
 /// In short, this struct allows you to manage the shapes that are drawn to
 /// the screen.
-#[expect(clippy::module_name_repetitions, reason = "VertexBuffer is more descriptive; and may be used without absolute path.")]
+#[expect(
+    clippy::module_name_repetitions,
+    reason = "VertexBuffer is more descriptive; and may be used without absolute path."
+)]
 pub struct VertexBuffer {
-
     /// The opengl pointer to the Vertex Array Object.\
     /// The VAO allows for quickly switching between different VBOs.
     /// > See <https://www.khronos.org/opengl/wiki/Vertex_Specification#Vertex_Array_Object>.
@@ -109,34 +111,74 @@ impl VertexBuffer {
     /// `u32` to an `i32`. You probably don't need to worry about this, unless
     /// you have over 2.1 billion vertex components (in which case you've got
     /// bigger problems to deal with, such as your GPU being on fire).
-    #[expect(clippy::similar_names, reason = "yes clippy, the vao and vbo *should* have a similar name...")]
+    #[expect(
+        clippy::similar_names,
+        reason = "yes clippy, the vao and vbo *should* have a similar name..."
+    )]
     #[inline]
     #[must_use]
     pub fn new(vertices: &[f32], elements: &[u32]) -> VertexBuffer {
         let (mut vbo_id, mut vao_id, mut ebo_id) = (0, 0, 0);
-            unsafe { gl::GenVertexArrays(1, &raw mut vao_id); }
-            unsafe { gl::GenBuffers(1, &raw mut vbo_id); }
-            unsafe { gl::GenBuffers(1, &raw mut ebo_id); }
+        unsafe {
+            gl::GenVertexArrays(1, &raw mut vao_id);
+        }
+        unsafe {
+            gl::GenBuffers(1, &raw mut vbo_id);
+        }
+        unsafe {
+            gl::GenBuffers(1, &raw mut ebo_id);
+        }
 
-            unsafe { gl::BindVertexArray(vao_id); }
-            unsafe { gl::BindBuffer(gl::ARRAY_BUFFER, vbo_id); }
-            #[expect(clippy::expect_used, clippy::indexing_slicing, reason = "This will only crash if the library user does something really stupid.")]
-            unsafe { gl::BufferData(gl::ARRAY_BUFFER,
-                mem::size_of_val(vertices).try_into()
+        unsafe {
+            gl::BindVertexArray(vao_id);
+        }
+        unsafe {
+            gl::BindBuffer(gl::ARRAY_BUFFER, vbo_id);
+        }
+        #[expect(
+            clippy::expect_used,
+            clippy::indexing_slicing,
+            reason = "This will only crash if the library user does something really stupid."
+        )]
+        unsafe {
+            gl::BufferData(
+                gl::ARRAY_BUFFER,
+                mem::size_of_val(vertices)
+                    .try_into()
                     .expect("way too much vertex data, overflowed when casting u32 to i32"),
                 (&raw const vertices[0]).cast::<c_void>(),
-                gl::STATIC_DRAW); };
-            unsafe { gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ebo_id); }
-            #[expect(clippy::expect_used, clippy::indexing_slicing, reason = "This will only crash if the library user does something really stupid. It may also crash if there are no elements in the VertexBuffer.")]
-            unsafe { gl::BufferData(gl::ELEMENT_ARRAY_BUFFER,
-                mem::size_of_val(elements).try_into()
+                gl::STATIC_DRAW,
+            );
+        };
+        unsafe {
+            gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ebo_id);
+        }
+        #[expect(
+            clippy::expect_used,
+            clippy::indexing_slicing,
+            reason = "This will only crash if the library user does something really stupid. It may also crash if there are no elements in the VertexBuffer."
+        )]
+        unsafe {
+            gl::BufferData(
+                gl::ELEMENT_ARRAY_BUFFER,
+                mem::size_of_val(elements)
+                    .try_into()
                     .expect("way too many elements, overflowed when casting u32 to i32"),
                 (&raw const elements[0]).cast::<c_void>(),
-                gl::STATIC_DRAW); };
-        #[expect(clippy::expect_used, reason = "This will only crash if the library user does something really stupid.")]
+                gl::STATIC_DRAW,
+            );
+        };
+        #[expect(
+            clippy::expect_used,
+            reason = "This will only crash if the library user does something really stupid."
+        )]
         VertexBuffer {
-            vao_id, vbo_id, ebo_id,
-            element_count: elements.len().try_into()
+            vao_id,
+            vbo_id,
+            ebo_id,
+            element_count: elements
+                .len()
+                .try_into()
                 .expect("way too many elements, overflowed when casting u32 to i32"),
         }
     }
@@ -171,16 +213,32 @@ impl VertexBuffer {
     /// `GLsizei`, the program will PANIC with an `expect` error.
     #[inline]
     pub fn add_attrib(&self, layout: u32, component_count: i32, stride: i32, offset: usize) {
-        #[expect(clippy::as_conversions, clippy::arithmetic_side_effects, reason = "Necessary for OpenGL C-interopability")]
+        #[expect(
+            clippy::as_conversions,
+            clippy::arithmetic_side_effects,
+            reason = "Necessary for OpenGL C-interopability"
+        )]
         let offset_ptr = (offset * mem::size_of::<GLfloat>()) as *const c_void;
-        #[expect(clippy::expect_used, clippy::arithmetic_side_effects, reason = "Necessary for OpenGL C-interopability. Seemingly impossible to crash.")]
-        unsafe { gl::VertexAttribPointer(
-            layout, component_count, gl::FLOAT, gl::FALSE,
-            stride * convert::TryInto::<GLsizei>::try_into(mem::size_of::<GLfloat>())
-                .expect("Realms: Failed to convert size of GLfloat to GLsizei"),
-            offset_ptr
-        ); };
-        unsafe { gl::EnableVertexAttribArray(layout); }
+        #[expect(
+            clippy::expect_used,
+            clippy::arithmetic_side_effects,
+            reason = "Necessary for OpenGL C-interopability. Seemingly impossible to crash."
+        )]
+        unsafe {
+            gl::VertexAttribPointer(
+                layout,
+                component_count,
+                gl::FLOAT,
+                gl::FALSE,
+                stride
+                    * convert::TryInto::<GLsizei>::try_into(mem::size_of::<GLfloat>())
+                        .expect("Realms: Failed to convert size of GLfloat to GLsizei"),
+                offset_ptr,
+            );
+        };
+        unsafe {
+            gl::EnableVertexAttribArray(layout);
+        }
     }
 
     /// Adding the vertex attributes through the `add_attrib` method requires a
@@ -227,9 +285,18 @@ impl VertexBuffer {
     pub fn set_layout(&self, component_counts: &[i32]) {
         let stride: i32 = component_counts.iter().sum();
         let mut offset = 0;
-        #[expect(clippy::arithmetic_side_effects, clippy::unwrap_used, reason = "This should never crash unless there are more than 2^31 components")]
+        #[expect(
+            clippy::arithmetic_side_effects,
+            clippy::unwrap_used,
+            reason = "This should never crash unless there are more than 2^31 components"
+        )]
         for (layout, component_count) in component_counts.iter().enumerate() {
-            self.add_attrib(u32::try_from(layout).unwrap(), *component_count, stride, offset);
+            self.add_attrib(
+                u32::try_from(layout).unwrap(),
+                *component_count,
+                stride,
+                offset,
+            );
             offset += usize::try_from(*component_count).unwrap();
         }
     }
@@ -239,7 +306,7 @@ impl VertexBuffer {
     /// elements, they will not be updated in the `VertexBuffer`. If changing
     /// the elements, you should create a new `VertexBuffer` and call `draw` on
     /// that instead.
-    /// 
+    ///
     /// WARNING: This binds the VAO, VBO and EBO. It *does not* unbind them
     /// afterwards.
     ///
@@ -278,11 +345,25 @@ impl VertexBuffer {
     #[inline]
     pub fn draw(&self, shader_program: &ShaderProgram) {
         shader_program.bind();
-        unsafe { gl::BindVertexArray(self.vao_id); }
-        unsafe { gl::BindBuffer(gl::ARRAY_BUFFER, self.vbo_id); }
-        unsafe { gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, self.ebo_id); }
-        unsafe { gl::EnableVertexAttribArray(self.vao_id); }
-        unsafe { gl::DrawElements(gl::TRIANGLES, self.element_count, gl::UNSIGNED_INT, ptr::null()); }
+        unsafe {
+            gl::BindVertexArray(self.vao_id);
+        }
+        unsafe {
+            gl::BindBuffer(gl::ARRAY_BUFFER, self.vbo_id);
+        }
+        unsafe {
+            gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, self.ebo_id);
+        }
+        unsafe {
+            gl::EnableVertexAttribArray(self.vao_id);
+        }
+        unsafe {
+            gl::DrawElements(
+                gl::TRIANGLES,
+                self.element_count,
+                gl::UNSIGNED_INT,
+                ptr::null(),
+            );
+        }
     }
 }
-

@@ -12,7 +12,7 @@ use crate::vertex::VertexBuffer;
 /// This function simply compiles and returns a `ShaderProgram` which will
 /// be compatible with all shapes in this module.
 /// This module contains structs for drawing simple shapes to the screen.
-/// 
+///
 /// For this reason, it's useful to have a set of default shaders that are
 /// guaranteed to work out-of-the-box when drawing simple 2D shapes.
 ///
@@ -40,15 +40,30 @@ use crate::vertex::VertexBuffer;
 /// PANIC.
 ///
 /// Please report any panics to <https://github.com/dylanopen/realms/issues>.
-#[expect(clippy::unwrap_used, reason = "This should be replaced with proper error returns on the next major release.")]
-#[expect(clippy::module_name_repetitions, reason = "Will be renamed to shader_2d in the next major release.")]
+#[expect(
+    clippy::unwrap_used,
+    reason = "This should be replaced with proper error returns on the next major release."
+)]
+#[expect(
+    clippy::module_name_repetitions,
+    reason = "Will be renamed to shader_2d in the next major release."
+)]
 #[inline]
 #[must_use]
 pub fn shape2d_shader() -> ShaderProgram {
     ShaderProgram::new(vec![
-        Shader::load_str(ShaderType::Vertex, include_str!("builtin_shaders/shape2d.vert.glsl")).unwrap(),
-        Shader::load_str(ShaderType::Fragment, include_str!("builtin_shaders/shape2d.frag.glsl")).unwrap(),
-    ]).unwrap()
+        Shader::load_str(
+            ShaderType::Vertex,
+            include_str!("builtin_shaders/shape2d.vert.glsl"),
+        )
+        .unwrap(),
+        Shader::load_str(
+            ShaderType::Fragment,
+            include_str!("builtin_shaders/shape2d.frag.glsl"),
+        )
+        .unwrap(),
+    ])
+    .unwrap()
 }
 
 /// The `TriangleShape` struct represents any 3 points in the 2d plane. Each
@@ -60,7 +75,10 @@ pub fn shape2d_shader() -> ShaderProgram {
 /// an easy way to create a certain type of triangle.
 /// For examples, please see the different functions that `TriangleShape`
 /// implements.
-#[expect(clippy::module_name_repetitions, reason = "Will be renamed to Triangle in the next major release.")]
+#[expect(
+    clippy::module_name_repetitions,
+    reason = "Will be renamed to Triangle in the next major release."
+)]
 #[non_exhaustive]
 pub struct TriangleShape {
     /// Stores the `VertexBuffer` that represents the triangle.
@@ -126,16 +144,28 @@ impl TriangleShape {
     pub fn new_solid(vertices: &[f32; 6], color: &Color) -> TriangleShape {
         let (r, g, b, _) = color.gl();
         TriangleShape::new(&[
-            vertices[0], vertices[1], r, g, b,
-            vertices[2], vertices[3], r, g, b,
-            vertices[4], vertices[5], r, g, b,
+            vertices[0],
+            vertices[1],
+            r,
+            g,
+            b,
+            vertices[2],
+            vertices[3],
+            r,
+            g,
+            b,
+            vertices[4],
+            vertices[5],
+            r,
+            g,
+            b,
         ])
     }
 
     /// Create a new `TriangleShape` as an isosceles triangle with a flat base.
     /// Isosceles triangles have two sides the same.
     /// The coordinates for the isosceles triangle are calculated like this:
-    /// 
+    ///
     /// 1. (`x`, `y`)
     /// 2. (`x+base`, `y`)
     /// 3. (`x+base*0.5`, `y+height`)
@@ -165,12 +195,17 @@ impl TriangleShape {
     /// ```
     #[inline]
     #[must_use]
-    pub fn new_flat_isosceles(x: f32, y: f32, width: f32, height: f32, color: &Color) -> TriangleShape {
-        TriangleShape::new_solid(&[
-            x, y,
-            x + width, y,
-            width.mul_add(0.5, x), y + height,
-        ], color)
+    pub fn new_flat_isosceles(
+        x: f32,
+        y: f32,
+        width: f32,
+        height: f32,
+        color: &Color,
+    ) -> TriangleShape {
+        TriangleShape::new_solid(
+            &[x, y, x + width, y, width.mul_add(0.5, x), y + height],
+            color,
+        )
     }
 
     /// Draw the triangle to the screen.
@@ -200,4 +235,3 @@ impl TriangleShape {
         self.vertex_buffer.draw(shader_program);
     }
 }
-

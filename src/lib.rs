@@ -1,10 +1,9 @@
 //! Welcome to Realms: the lightweight, simple and powerful library which
 //! provides graphics and game functionality.  
-//! 
+//!
 //! Homepage: <https://dylancode.dev/realms>.
 //! Repository: <https://github.com/dylanopen/realms>.
 //! Documentation: <https://docs.rs/realms>.
-
 
 // ## Internal: Lints
 //
@@ -19,15 +18,14 @@
 // or PR explaining why it should be removed.
 
 // Realms modules //
-pub mod window;
+pub mod data;
 pub mod input;
 pub mod shader;
-pub mod data;
-pub mod vertex;
-pub mod texture;
 pub mod shape;
+pub mod texture;
+pub mod vertex;
+pub mod window;
 
 // External crates //
 pub extern crate gl;
 pub extern crate glfw;
-
