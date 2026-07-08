@@ -193,3 +193,157 @@ impl TriangleShape {
     }
 }
 
+
+
+/// The `RectangleShape` struct represents any 3 points in the 2d plane. Each
+/// point (vertex) is made up of:
+/// - 2 position components (x, y)
+/// - 3 color components (r, g, b)
+///
+/// There are many different `new` methods for a `TriangleShape`, each providing
+/// an easy way to create a certain type of triangle.
+/// For examples, please see the different functions that `TriangleShape`
+/// implements.
+#[non_exhaustive]
+pub struct RectangleShape {
+    /// Stores the `VertexBuffer` that represents the triangle.
+    /// See the documentation for `VertexBuffer` for more info.
+    /// The `TriangleShape::draw` method will call `vertex_buffer.draw`.
+    vertex_buffer: VertexBuffer,
+}
+
+impl RectangleShape {
+    /// Create a new `TriangleShape`from a list of 15 `f32`s. The list is a set
+    /// of 3 vertices, each containing two components:
+    /// - a *position* made up of `2` `f32`s (x, y)
+    /// - a *color* made up of `3` `f32`s (r, g, b)
+    ///
+    /// ## Example usage
+    ///
+    /// ``` rust
+    /// let shader = shape2d_shader();
+    /// let triangle = TriangleShape::new(&[
+    ///     -0.5, -0.5, 1.0, 0.0, 0.0,
+    ///      0.5, -0.5, 0.0, 1.0, 0.0,
+    ///     -0.5,  0.5, 0.0, 0.0, 1.0,
+    /// ]);
+    /// while w.is_running() {
+    ///     ...
+    ///     triangle.draw(&shader);
+    /// }
+    /// ```
+    #[inline]
+    pub fn new(vertices: &[f32; 20]) -> RectangleShape {
+        let vertex_buffer = VertexBuffer::new(vertices, &[0, 1, 2, 2, 3, 0]);
+        vertex_buffer.set_layout(&[2_i32, 3_i32]);
+        RectangleShape { vertex_buffer }
+    }
+
+    /// Create a new `RectangleShape` from a list of 8 `f32`s and a color for
+    /// the entire rectangle. The list is a set of 4 vertices, each containing
+    /// one component:
+    /// - a *position* made up of `2` `f32`s (x, y)
+    ///
+    /// As the name implies, this function will create a new rectangle with a
+    /// single, solid color for the entire rectangle. If you need to interpolate
+    /// (blend) between different colors and have different colors for each
+    /// vertex, use the `RectangleShape::new` function.
+    ///
+    /// ## Example usage
+    ///
+    /// ``` rust
+    /// let shader = shape2d_shader();
+    /// let rectangle = RectangleShape::new_solid(&[
+    ///     -0.5, -0.5,
+    ///      0.5, -0.5,
+    ///      0.5,  0.5,
+    ///     -0.5,  0.5,
+    /// ], &Color::rgb(255, 127, 31));
+    /// while w.is_running() {
+    ///     ...
+    ///     rectangle.draw(&shader);
+    /// }
+    /// ```
+    #[inline]
+    pub fn new_solid(vertices: &[f32; 8], color: &Color) -> RectangleShape {
+        let (r, g, b, _) = color.gl();
+        RectangleShape::new(&[
+            vertices[0], vertices[1], r, g, b,
+            vertices[2], vertices[3], r, g, b,
+            vertices[4], vertices[5], r, g, b,
+            vertices[6], vertices[7], r, g, b,
+        ])
+    }
+
+    /// Create a new `RectangleShape` from an `x` position, `y` position, 
+    /// `width` and `height`.
+    ///
+    /// The coordinates for the rectangle are calculated like this:
+    ///
+    /// 1. (`x`, `y`)
+    /// 2. (`x+base`, `y`)
+    /// 3. (`x+base`, `y+height`)
+    /// 3. (`x`, `y+height`)
+    ///
+    /// ## Parameters
+    ///
+    /// - `x: f32` - the mininum (furthest left) X coordinate on the rectangle 
+    /// - `y: f32` - the minimum (furhest down) Y coordinate on the rectangle
+    /// - `width: f32` - the width of the rectangle (the difference in X
+    ///   position between the furthest right point and the furthest left point)
+    /// - `height: f32` - the height of the rectangle (the difference in Y
+    ///   position between the highest point and the lowest point)
+    /// 
+    /// ## Example usage
+    /// 
+    /// ``` rust
+    /// let shader = shape2d_shader();
+    /// let rectangle = RectangleShape::new_flat(
+    ///     -0.5, -0.5, 1.0, 1.0,
+    ///     Color::new(63, 191, 91)
+    /// );
+    /// while w.is_running() {
+    ///     ...
+    ///     rectangle.draw(&shader);
+    /// }
+    /// ```
+    #[inline]
+    pub fn new_flat(x: f32, y: f32, width: f32, height: f32, color: &Color) -> RectangleShape {
+        RectangleShape::new_solid(&[
+            x, y,
+            x + width, y,
+            x + width, y + height,
+            x, y + height
+        ], color)
+    }
+
+    /// Draw the rectangle to the screen.
+    /// You **must** pass in a reference to the shader program returned by the
+    /// `shape2d_shader()` function, or a compatible shader program, or else
+    /// this method will fail silently.
+    ///
+    /// This method currently simply calls the `draw` method of the
+    /// `vertex_buffer` field.
+    ///
+    /// ## Example usage
+    ///
+    /// ``` rust
+    /// let shader = shape2d_shader();
+    /// let rectangle = RectangleShape::new_solid(&[
+    ///     -0.5, -0.5,
+    ///      0.5, -0.5,
+    ///      0.5,  0.5,
+    ///     -0.5,  0.5,
+    /// ], &Color::rgb(255, 127, 31));
+    /// while w.is_running() {
+    ///     ...
+    ///     rectangle.draw(&shader);
+    /// }
+    /// ```
+    #[inline]
+    pub fn draw(&self, shader_program: &ShaderProgram) {
+        self.vertex_buffer.draw(shader_program);
+    }
+}
+
+

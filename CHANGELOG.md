@@ -68,4 +68,16 @@ Non-breaking changes:
 - Add builtin shader `shape2d.frag.glsl` (fragment)
 - Add `shape2d_shader` function for loading builtin shape2d shaders
 - Add `TriangleShape` struct for drawing 3 points more easily
+  - Add `TriangleShape::new` function
+  - Add `TriangleShape::new_solid` function
+  - Add `TriangleShape::new_flat_isosceles` function
+  - Add `TriangleShape::draw` method
+
+## 3.4.4 -> 3.5.4 (minor)
+
+- Add `RectangleShape` struct
+  - Add `RectangleShape::new` function
+  - Add `RectangleShape::new_solid` function
+  - Add `RectangleShape::new_flat` function
+  - Add `RectangleShape::draw` method
 
