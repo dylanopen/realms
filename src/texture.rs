@@ -4,6 +4,7 @@
 //! The main struct is the `Texture` struct.
 
 use core::ffi::c_void;
+use image::EncodableLayout;
 
 /// This struct stores the opengl id for a given 2D texture.
 ///
@@ -46,7 +47,8 @@ impl Texture {
 
         unsafe {
             #[expect(clippy::borrow_as_ptr, clippy::indexing_slicing, clippy::as_conversions, reason = "can't find other way to specify pixels field")]
-            gl::TexImage2D(gl::TEXTURE_2D,
+            gl::TexImage2D(
+                gl::TEXTURE_2D,
                 0,
                 gl::RGB.try_into()
                     .map_err(|_e| "gl::RGB returned garbage data which overflowed")?,
@@ -55,7 +57,7 @@ impl Texture {
                 width.try_into()
                     .map_err(|_e| "image width too large, led to overflow")?,
                 0,
-                gl::RGB,
+                gl::RGBA,
                 gl::UNSIGNED_BYTE,
                 (&bytes[0] as *const u8).cast::<c_void>()
             );
@@ -93,7 +95,8 @@ impl Texture {
         let img = image::open(Path::new(path))
             .map_err(|err| format!("Realms: could not open image file {path}: {err}"))?;
         let img = img.flipv();
-        let data = img.as_bytes();
+        let rgba_data = img.to_rgba8();
+        let data = rgba_data.as_bytes();
 
         Texture::load_bytes(img.width(), data)
     }
