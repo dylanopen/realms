@@ -24,7 +24,7 @@ jobs:
     - name: Tests
       run: cargo test --verbose
     - name: Formatting Checks
-      run: cargo fmt --check3
+      run: cargo fmt --check
     - name: Clippy Lints
       run: cargo clippy -- -Dwarnings
     - name: Examples
