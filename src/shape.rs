@@ -1,5 +1,6 @@
 //! The `shape` module contains structs and functions for drawing simple 2D
 //! shapes to the screen.
+//!
 //! Each shape instance will create a new `VertexBuffer` which need to
 //! individually be sent to the GPU. For that reason, this module should only
 //! be used for prototyping and applications where performance isn't important.
@@ -8,14 +9,15 @@ use crate::data::Color;
 use crate::shader::{Shader, ShaderProgram, ShaderType};
 use crate::vertex::VertexBuffer;
 
-/// This module contains structs for drawing simple shapes to the screen. For
-/// this reason, it's useful to have a set of default shaders that are
+/// This function simply compiles and returns a `ShaderProgram` which will
+/// be compatible with all shapes in this module.
+/// This module contains structs for drawing simple shapes to the screen.
+/// 
+/// For this reason, it's useful to have a set of default shaders that are
 /// guaranteed to work out-of-the-box when drawing simple 2D shapes.
 ///
-/// This function simply compiles and returns a `ShaderProgram` which will
-/// be compatible with all shapes in this module. You are advised to call and
-/// store the result of this function at the beginning of your main function,
-/// so you don't ever have to recompile this shader.
+/// You are advised to call and store the result of this function at the beginning
+/// of your main function, so you don't ever have to recompile this shader.
 ///
 /// ## Example usage
 ///
@@ -37,9 +39,11 @@ use crate::vertex::VertexBuffer;
 /// shader program will fail to link or compile, and then this function will
 /// PANIC.
 ///
-/// Please report any panics to <https://github.com/dylanopen/realms/issues>
-#[expect(clippy::unwrap_used)]
+/// Please report any panics to <https://github.com/dylanopen/realms/issues>.
+#[expect(clippy::unwrap_used, reason = "This should be replaced with proper error returns on the next major release.")]
+#[expect(clippy::module_name_repetitions, reason = "Will be renamed to shader_2d in the next major release.")]
 #[inline]
+#[must_use]
 pub fn shape2d_shader() -> ShaderProgram {
     ShaderProgram::new(vec![
         Shader::load_str(ShaderType::Vertex, include_str!("builtin_shaders/shape2d.vert.glsl")).unwrap(),
@@ -56,6 +60,7 @@ pub fn shape2d_shader() -> ShaderProgram {
 /// an easy way to create a certain type of triangle.
 /// For examples, please see the different functions that `TriangleShape`
 /// implements.
+#[expect(clippy::module_name_repetitions, reason = "Will be renamed to Triangle in the next major release.")]
 #[non_exhaustive]
 pub struct TriangleShape {
     /// Stores the `VertexBuffer` that represents the triangle.
@@ -85,6 +90,7 @@ impl TriangleShape {
     /// }
     /// ```
     #[inline]
+    #[must_use]
     pub fn new(vertices: &[f32; 15]) -> TriangleShape {
         let vertex_buffer = VertexBuffer::new(vertices, &[0, 1, 2]);
         vertex_buffer.set_layout(&[2_i32, 3_i32]);
@@ -116,6 +122,7 @@ impl TriangleShape {
     /// }
     /// ```
     #[inline]
+    #[must_use]
     pub fn new_solid(vertices: &[f32; 6], color: &Color) -> TriangleShape {
         let (r, g, b, _) = color.gl();
         TriangleShape::new(&[
@@ -157,6 +164,7 @@ impl TriangleShape {
     /// }
     /// ```
     #[inline]
+    #[must_use]
     pub fn new_flat_isosceles(x: f32, y: f32, width: f32, height: f32, color: &Color) -> TriangleShape {
         TriangleShape::new_solid(&[
             x, y,

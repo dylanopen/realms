@@ -245,6 +245,7 @@ impl MouseButton {
     /// `Event::from_glfw` to convert a glfw mouse event into a realms mouse
     /// event.
     #[inline]
+    #[expect(clippy::single_call_fn, reason = "Separating this internal, unsafe behaviour helps keep the code more concise. Also, this is likely to cause memory bugs, so is a single unsafe function.")]
     const fn from_glfw(glfw_mouse_button: glfw::MouseButton) -> MouseButton {
         #[expect(clippy::wildcard_enum_match_arm, reason = "if more variants are added, we still want to ignore them")]
         match glfw_mouse_button {
@@ -664,8 +665,9 @@ impl Key {
     /// ## KNOWN CRASHES
     /// This function is known to SEGFAULT if the key is not known by the glfw
     /// ffi bindings. If your code crashes upon pressing a specific key, this
-    /// is why.
-    unsafe fn from_glfw(glfw_key: glfw::Key) -> Key {
+    /// is why, and you may need to add its keycode to the [`Key`] enum.
+    #[expect(clippy::single_call_fn, reason = "Separating this internal, unsafe behaviour helps keep the code more concise. Also, this is likely to cause memory bugs, so is a single unsafe function.")]
+    const unsafe fn from_glfw(glfw_key: glfw::Key) -> Key {
         use core::mem;
         #[expect(clippy::as_conversions, reason = "can't find a way other than `as` to convert an enum variant to its respective integer")]
         unsafe { mem::transmute(glfw_key as usize) }

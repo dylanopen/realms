@@ -99,6 +99,7 @@ impl Window {
     /// }
     /// ```
     #[inline]
+    #[must_use]
     pub fn is_running(&self) -> bool {
         !self.glfw_window.should_close()
     }
@@ -183,8 +184,8 @@ impl Window {
     #[inline]
     pub fn fill(&mut self, color: Color) {
         let (r, g, b, a) = color.gl();
-        unsafe { gl::ClearColor(r, g, b, a) };
-        unsafe { gl::Clear(gl::COLOR_BUFFER_BIT) };
+        unsafe { gl::ClearColor(r, g, b, a); }
+        unsafe { gl::Clear(gl::COLOR_BUFFER_BIT); }
     }
 
     /// Returns a `Vec` of `Event`s gathered this frame. You should loop over
