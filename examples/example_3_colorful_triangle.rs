@@ -11,7 +11,7 @@ use realms::data::Color;
 use realms::shader::{Shader, ShaderProgram, ShaderType};
 
 fn main() {
-    let mut window = Window::new(800, 600, "Hello Triangle!")
+    let mut window = Window::new(800, 600, "Hello Colors!")
         .expect("Failed to create window");
 
     let shader_program = ShaderProgram::new(vec![
