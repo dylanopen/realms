@@ -49,7 +49,7 @@ impl Texture {
             reason = "We are casting constants, impossible to cause issues."
         )]
         unsafe {
-            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_S, gl::REPEAT as i32)
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_S, gl::REPEAT as i32);
         };
         #[expect(
             clippy::as_conversions,
@@ -57,7 +57,7 @@ impl Texture {
             reason = "We are casting constants, impossible to cause issues."
         )]
         unsafe {
-            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_T, gl::REPEAT as i32)
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_T, gl::REPEAT as i32);
         };
         #[expect(
             clippy::as_conversions,
@@ -65,7 +65,7 @@ impl Texture {
             reason = "We are casting constants, impossible to cause issues."
         )]
         unsafe {
-            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32)
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32);
         };
         #[expect(
             clippy::as_conversions,
@@ -73,7 +73,7 @@ impl Texture {
             reason = "We are casting constants, impossible to cause issues."
         )]
         unsafe {
-            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32)
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
         };
 
         unsafe {

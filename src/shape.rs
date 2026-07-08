@@ -236,7 +236,6 @@ impl TriangleShape {
     }
 }
 
-
 /// The `RectangleShape` struct represents any 3 points in the 2d plane. Each
 /// point (vertex) is made up of:
 /// - 2 position components (x, y)
@@ -246,6 +245,10 @@ impl TriangleShape {
 /// an easy way to create a certain type of triangle.
 /// For examples, please see the different functions that `TriangleShape`
 /// implements.
+#[expect(
+    clippy::module_name_repetitions,
+    reason = "Will be renamed to Triangle in the next major release."
+)]
 #[non_exhaustive]
 pub struct RectangleShape {
     /// Stores the `VertexBuffer` that represents the triangle.
@@ -275,6 +278,7 @@ impl RectangleShape {
     /// }
     /// ```
     #[inline]
+    #[must_use]
     pub fn new(vertices: &[f32; 20]) -> RectangleShape {
         let vertex_buffer = VertexBuffer::new(vertices, &[0, 1, 2, 2, 3, 0]);
         vertex_buffer.set_layout(&[2_i32, 3_i32]);
@@ -307,13 +311,30 @@ impl RectangleShape {
     /// }
     /// ```
     #[inline]
+    #[must_use]
     pub fn new_solid(vertices: &[f32; 8], color: &Color) -> RectangleShape {
         let (r, g, b, _) = color.gl();
         RectangleShape::new(&[
-            vertices[0], vertices[1], r, g, b,
-            vertices[2], vertices[3], r, g, b,
-            vertices[4], vertices[5], r, g, b,
-            vertices[6], vertices[7], r, g, b,
+            vertices[0],
+            vertices[1],
+            r,
+            g,
+            b,
+            vertices[2],
+            vertices[3],
+            r,
+            g,
+            b,
+            vertices[4],
+            vertices[5],
+            r,
+            g,
+            b,
+            vertices[6],
+            vertices[7],
+            r,
+            g,
+            b,
         ])
     }
 
@@ -350,13 +371,12 @@ impl RectangleShape {
     /// }
     /// ```
     #[inline]
+    #[must_use]
     pub fn new_flat(x: f32, y: f32, width: f32, height: f32, color: &Color) -> RectangleShape {
-        RectangleShape::new_solid(&[
-            x, y,
-            x + width, y,
-            x + width, y + height,
-            x, y + height
-        ], color)
+        RectangleShape::new_solid(
+            &[x, y, x + width, y, x + width, y + height, x, y + height],
+            color,
+        )
     }
 
     /// Draw the rectangle to the screen.
@@ -387,5 +407,3 @@ impl RectangleShape {
         self.vertex_buffer.draw(shader_program);
     }
 }
-
-
