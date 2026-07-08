@@ -69,3 +69,10 @@ Non-breaking changes:
 - Add `shape2d_shader` function for loading builtin shape2d shaders
 - Add `TriangleShape` struct for drawing 3 points more easily
 
+## 3.5.4 -> 3.5.5 (patch)
+
+- Various internal improvements
+- Move examples to a place Cargo can find them (allow using `cargo run --example`)
+- Fix texture loading to support RGBA
+- Create example 5: texture
+- Add formatting checks to CI workflows
