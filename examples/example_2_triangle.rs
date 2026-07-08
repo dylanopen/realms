@@ -1,3 +1,6 @@
+//! This example draws a triangle to the screen, by sending the vertex *positions* to the GPU and
+//! using a shader with a hardcoded
+
 use realms::vertex::VertexBuffer;
 use realms::window::Window; // don't accidentally import realms::glfw::Window!
 use realms::data::Color;
@@ -8,15 +11,15 @@ fn main() {
     let mut window = Window::new(800, 600, "Hello Triangle!")
         .expect("Failed to create window");
 
-    // create the shader program from the shaders `vertex.glsl` and `fragment.glsl`:
+    // create the shader program from the shaders `vertex2.glsl` and `fragment2.glsl`:
     let shader_program = ShaderProgram::new(vec![
-        Shader::load_str(ShaderType::Vertex, include_str!("vertex.glsl")).unwrap(),
-        Shader::load_str(ShaderType::Fragment, include_str!("fragment.glsl")).unwrap(),
+        Shader::load_str(ShaderType::Vertex, include_str!("shaders/vertex2.glsl")).unwrap(),
+        Shader::load_str(ShaderType::Fragment, include_str!("shaders/fragment2.glsl")).unwrap(),
     ]).unwrap();
-    // NOTE: you need to code the `vertex.glsl` and `fragment.glsl` files. Some
+    // NOTE: you need to code the `vertex2.glsl` and `fragment2.glsl` files. Some
     // default shaders are provided for you, in the same directory as this file
-    // in the files `vertex.glsl` and `fragment.glsl`. You can copy and paste
-    // these into the SAME DIRECTORY as your main.rs file.
+    // in the files `vertex2.glsl` and `fragment2.glsl`. You can copy and paste
+    // these into the SAME DIRECTORY as your example3_colorful_triangle file.
 
     // create an [f32] slice of vertex data:
     let vertices: [f32; 6] = [ // specify type `f32` with 6 elements.

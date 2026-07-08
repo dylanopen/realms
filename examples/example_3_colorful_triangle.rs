@@ -1,3 +1,6 @@
+//! This draws a triangle like in example 2, but this time, also includes the color information in
+//! the vertex data sent to the GPU (to draw a colorful triangle)!
+
 // This example assumes you have also read example 2: triangle.
 // Many things are not explained here as they were explained in the last
 // example.
@@ -12,11 +15,11 @@ fn main() {
         .expect("Failed to create window");
 
     let shader_program = ShaderProgram::new(vec![
-        Shader::load_str(ShaderType::Vertex, include_str!("vertex.glsl")).unwrap(),
-        Shader::load_str(ShaderType::Fragment, include_str!("fragment.glsl")).unwrap(),
+        Shader::load_str(ShaderType::Vertex, include_str!("shaders/vertex3.glsl")).unwrap(),
+        Shader::load_str(ShaderType::Fragment, include_str!("shaders/fragment3.glsl")).unwrap(),
     ]).unwrap();
     // NOTE: the shaders have changed slightly since example 2. Please update
-    // `vertex.glsl` and `fragment.glsl` using the new versions of them in
+    // `vertex2.glsl` and `fragment2.glsl` using the new versions of them in
     // this directory.
 
     let vertices: [f32; 15] = [ // specify type `f32` with 15 elements: 3 vertices * 5 floats each.

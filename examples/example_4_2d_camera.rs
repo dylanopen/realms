@@ -1,3 +1,8 @@
+//! Does exactly the same as example 3, but also introduces *uniforms*: a way of sending a variable
+//! to be used in *every* point in the vertex/fragment shader.
+//! In this example, it's used to control a global 'position offset', which is subtracted from each
+//! vertex position to act as a 'camera' moving.
+
 // This example assumes you have also read example 3: colorful triangle.
 // Many things are not explained here as they were explained in the last
 // example. This example builds upon example 3.
@@ -14,11 +19,11 @@ fn main() {
         .expect("Failed to create window");
 
     let shader_program = ShaderProgram::new(vec![
-        Shader::load_str(ShaderType::Vertex, include_str!("vertex.glsl")).unwrap(),
-        Shader::load_str(ShaderType::Fragment, include_str!("fragment.glsl")).unwrap(),
+        Shader::load_str(ShaderType::Vertex, include_str!("shaders/vertex4.glsl")).unwrap(),
+        Shader::load_str(ShaderType::Fragment, include_str!("shaders/fragment4.glsl")).unwrap(),
     ]).unwrap();
     // NOTE: the vertex shader has  changed since example 3. Please update
-    // `vertex.glsl` using the new versions of it in this directory.
+    // `vertex2.glsl` using the new versions of it in this directory.
     // The fragment shader has stayed the same.
 
     // all vertices are the same as in the last example

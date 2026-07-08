@@ -1,3 +1,6 @@
+//! This example creates a blank navy window, to show you how window management
+//! in Realms works.
+
 use realms::window::Window; // don't accidentally import realms::glfw::Window!
 use realms::data::Color;
 use realms::input::{Event, Key}; // again, don't import from realms::glfw
