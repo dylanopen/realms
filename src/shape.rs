@@ -22,7 +22,7 @@ use crate::vertex::VertexBuffer;
 /// ## Example usage
 ///
 /// ``` rust
-/// let shape2d_program = shape2d_shader();
+/// let shape2d_program = shader_2d();
 /// let triangle = Triangle::new(...);
 /// while w.is_running() {
 ///     ...
@@ -44,13 +44,9 @@ use crate::vertex::VertexBuffer;
     clippy::unwrap_used,
     reason = "This should never panic as it is compile-time included. However, it is possible, see the doc-comment."
 )]
-#[expect(
-    clippy::module_name_repetitions,
-    reason = "Will be renamed to shader_2d in the next major release."
-)]
 #[inline]
 #[must_use]
-pub fn shape2d_shader() -> ShaderProgram {
+pub fn shader_2d() -> ShaderProgram {
     ShaderProgram::new(vec![
         Shader::load_str(
             ShaderType::Vertex,
@@ -92,7 +88,7 @@ impl Triangle {
     /// ## Example usage
     ///
     /// ``` rust
-    /// let shader = shape2d_shader();
+    /// let shader = shader_2d();
     /// let triangle = Triangle::new(&[
     ///     -0.5, -0.5, 1.0, 0.0, 0.0,
     ///      0.5, -0.5, 0.0, 1.0, 0.0,
@@ -124,7 +120,7 @@ impl Triangle {
     /// ## Example usage
     ///
     /// ``` rust
-    /// let shader = shape2d_shader();
+    /// let shader = shader_2d();
     /// let triangle = Triangle::new_solid(&[
     ///     -0.5, -0.5,
     ///      0.5, -0.5,
@@ -168,7 +164,7 @@ impl Triangle {
     /// ## Example usage
     ///
     /// ``` rust
-    /// let shader = shape2d_shader();
+    /// let shader = shader_2d();
     /// let triangle = Triangle::new_flat_isosceles(
     ///     -0.5, -0.5, 1.0, 1.0,
     ///     Color::new(63, 191, 91)
@@ -189,7 +185,7 @@ impl Triangle {
 
     /// Draw the triangle to the screen.
     /// You **must** pass in a reference to the shader program returned by the
-    /// `shape2d_shader()` function, or a compatible shader program, or else
+    /// `shader_2d()` function, or a compatible shader program, or else
     /// this method will fail silently.
     ///
     /// This method currently simply calls the `draw` method of the
@@ -198,7 +194,7 @@ impl Triangle {
     /// ## Example usage
     ///
     /// ``` rust
-    /// let shader = shape2d_shader();
+    /// let shader = shader_2d();
     /// let triangle = Triangle::new_solid(&[
     ///     -0.5, -0.5,
     ///      0.5, -0.5,
@@ -241,7 +237,7 @@ impl Rectangle {
     /// ## Example usage
     ///
     /// ``` rust
-    /// let shader = shape2d_shader();
+    /// let shader = shader_2d();
     /// let rectangle = Rectangle::new(&[
     ///     -0.5, -0.5, 1.0, 0.0, 0.0,
     ///      0.5, -0.5, 0.0, 1.0, 0.0,
@@ -274,7 +270,7 @@ impl Rectangle {
     /// ## Example usage
     ///
     /// ``` rust
-    /// let shader = shape2d_shader();
+    /// let shader = shader_2d();
     /// let rectangle = Rectangle::new_solid(&[
     ///     -0.5, -0.5,
     ///      0.5, -0.5,
@@ -321,7 +317,7 @@ impl Rectangle {
     /// ## Example usage
     ///
     /// ``` rust
-    /// let shader = shape2d_shader();
+    /// let shader = shader_2d();
     /// let rectangle = Rectangle::new_flat(
     ///     -0.5, -0.5, 1.0, 1.0,
     ///     Color::new(63, 191, 91)
@@ -342,7 +338,7 @@ impl Rectangle {
 
     /// Draw the rectangle to the screen.
     /// You **must** pass in a reference to the shader program returned by the
-    /// `shape2d_shader()` function, or a compatible shader program, or else
+    /// `shader_2d()` function, or a compatible shader program, or else
     /// this method will fail silently.
     ///
     /// This method currently simply calls the `draw` method of the
@@ -351,7 +347,7 @@ impl Rectangle {
     /// ## Example usage
     ///
     /// ``` rust
-    /// let shader = shape2d_shader();
+    /// let shader = shader_2d();
     /// let rectangle = Rectangle::new_solid(&[
     ///     -0.5, -0.5,
     ///      0.5, -0.5,

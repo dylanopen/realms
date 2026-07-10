@@ -93,3 +93,4 @@ Non-breaking changes:
 
 - Rename `RectangleShape` -> `Rectangle`
 - Rename `TriangleShape` -> `Triangle`
+- Rename `shape2d_shader` -> `shader_2d`
