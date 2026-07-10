@@ -42,7 +42,7 @@ use crate::vertex::VertexBuffer;
 /// Please report any panics to <https://github.com/dylanopen/realms/issues>.
 #[expect(
     clippy::unwrap_used,
-    reason = "This should be replaced with proper error returns on the next major release."
+    reason = "This should never panic as it is compile-time included. However, it is possible, see the doc-comment."
 )]
 #[expect(
     clippy::module_name_repetitions,
@@ -235,7 +235,7 @@ impl TriangleShape {
 /// implements.
 #[expect(
     clippy::module_name_repetitions,
-    reason = "Will be renamed to Triangle in the next major release."
+    reason = "Will be renamed to Rectangle in the next major release."
 )]
 #[non_exhaustive]
 pub struct RectangleShape {
