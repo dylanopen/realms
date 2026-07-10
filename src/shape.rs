@@ -225,25 +225,25 @@ impl TriangleShape {
     }
 }
 
-/// The `RectangleShape` struct represents any 3 points in the 2d plane. Each
+/// The `Rectangle` struct represents any 3 points in the 2d plane. Each
 /// point (vertex) is made up of:
 /// - 2 position components (x, y)
 /// - 3 color components (r, g, b)
 ///
-/// There are many different `new` methods for a `TriangleShape`, each providing
-/// an easy way to create a certain type of triangle.
-/// For examples, please see the different functions that `TriangleShape`
+/// There are many different `new` methods for a `Rectangle`, each providing
+/// an easy way to create a certain type of rectangle.
+/// For examples, please see the different functions that `Rectangle`
 /// implements.
 #[non_exhaustive]
 pub struct Rectangle {
-    /// Stores the `VertexBuffer` that represents the triangle.
+    /// Stores the `VertexBuffer` that represents the rectangle.
     /// See the documentation for `VertexBuffer` for more info.
-    /// The `TriangleShape::draw` method will call `vertex_buffer.draw`.
+    /// The `Rectangle::draw` method will call `vertex_buffer.draw`.
     vertex_buffer: VertexBuffer,
 }
 
 impl Rectangle {
-    /// Create a new `TriangleShape`from a list of 15 `f32`s. The list is a set
+    /// Create a new `Rectangle` from a list of 15 `f32`s. The list is a set
     /// of 3 vertices, each containing two components:
     /// - a *position* made up of `2` `f32`s (x, y)
     /// - a *color* made up of `3` `f32`s (r, g, b)
@@ -252,14 +252,15 @@ impl Rectangle {
     ///
     /// ``` rust
     /// let shader = shape2d_shader();
-    /// let triangle = TriangleShape::new(&[
+    /// let rectangle = Rectangle::new(&[
     ///     -0.5, -0.5, 1.0, 0.0, 0.0,
     ///      0.5, -0.5, 0.0, 1.0, 0.0,
+    ///      0.5,  0.5, 1.0, 1.0, 1.0,
     ///     -0.5,  0.5, 0.0, 0.0, 1.0,
     /// ]);
     /// while w.is_running() {
     ///     ...
-    ///     triangle.draw(&shader);
+    ///     rectangle.draw(&shader);
     /// }
     /// ```
     #[inline]
@@ -270,7 +271,7 @@ impl Rectangle {
         Rectangle { vertex_buffer }
     }
 
-    /// Create a new `RectangleShape` from a list of 8 `f32`s and a color for
+    /// Create a new `Rectangle` from a list of 8 `f32`s and a color for
     /// the entire rectangle. The list is a set of 4 vertices, each containing
     /// one component:
     /// - a *position* made up of `2` `f32`s (x, y)
@@ -278,13 +279,13 @@ impl Rectangle {
     /// As the name implies, this function will create a new rectangle with a
     /// single, solid color for the entire rectangle. If you need to interpolate
     /// (blend) between different colors and have different colors for each
-    /// vertex, use the `RectangleShape::new` function.
+    /// vertex, use the `Rectangle::new` function.
     ///
     /// ## Example usage
     ///
     /// ``` rust
     /// let shader = shape2d_shader();
-    /// let rectangle = RectangleShape::new_solid(&[
+    /// let rectangle = Rectangle::new_solid(&[
     ///     -0.5, -0.5,
     ///      0.5, -0.5,
     ///      0.5,  0.5,
@@ -308,7 +309,7 @@ impl Rectangle {
         ])
     }
 
-    /// Create a new `RectangleShape` from an `x` position, `y` position,
+    /// Create a new `Rectangle` from an `x` position, `y` position,
     /// `width` and `height`.
     ///
     /// The coordinates for the rectangle are calculated like this:
@@ -331,7 +332,7 @@ impl Rectangle {
     ///
     /// ``` rust
     /// let shader = shape2d_shader();
-    /// let rectangle = RectangleShape::new_flat(
+    /// let rectangle = Rectangle::new_flat(
     ///     -0.5, -0.5, 1.0, 1.0,
     ///     Color::new(63, 191, 91)
     /// );
@@ -361,7 +362,7 @@ impl Rectangle {
     ///
     /// ``` rust
     /// let shader = shape2d_shader();
-    /// let rectangle = RectangleShape::new_solid(&[
+    /// let rectangle = Rectangle::new_solid(&[
     ///     -0.5, -0.5,
     ///      0.5, -0.5,
     ///      0.5,  0.5,
