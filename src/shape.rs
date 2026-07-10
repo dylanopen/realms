@@ -141,12 +141,13 @@ impl TriangleShape {
     /// ```
     #[inline]
     #[must_use]
+    #[rustfmt::skip]
     pub fn new_solid(vertices: &[f32; 6], color: &Color) -> TriangleShape {
         let (r, g, b, _) = color.gl();
         TriangleShape::new(&[
-            vertices[0], vertices[1], r, g, b, //
-            vertices[2], vertices[3], r, g, b, //
-            vertices[4], vertices[5], r, g, b, //
+            vertices[0], vertices[1], r, g, b,
+            vertices[2], vertices[3], r, g, b,
+            vertices[4], vertices[5], r, g, b,
         ])
     }
 
@@ -300,13 +301,14 @@ impl RectangleShape {
     /// ```
     #[inline]
     #[must_use]
+    #[rustfmt::skip]
     pub fn new_solid(vertices: &[f32; 8], color: &Color) -> RectangleShape {
         let (r, g, b, _) = color.gl();
         RectangleShape::new(&[
-            vertices[0], vertices[1], r, g, b, //
-            vertices[2], vertices[3], r, g, b, //
-            vertices[4], vertices[5], r, g, b, //
-            vertices[6], vertices[7], r, g, b, //
+            vertices[0], vertices[1], r, g, b,
+            vertices[2], vertices[3], r, g, b,
+            vertices[4], vertices[5], r, g, b,
+            vertices[6], vertices[7], r, g, b,
         ])
     }
 
