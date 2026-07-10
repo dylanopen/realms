@@ -66,29 +66,25 @@ pub fn shape2d_shader() -> ShaderProgram {
     .unwrap()
 }
 
-/// The `TriangleShape` struct represents any 3 points in the 2d plane. Each
+/// The `Triangle` struct represents any 3 points in the 2d plane. Each
 /// point (vertex) is made up of:
 /// - 2 position components (x, y)
 /// - 3 color components (r, g, b)
 ///
-/// There are many different `new` methods for a `TriangleShape`, each providing
+/// There are many different `new` methods for a `Triangle`, each providing
 /// an easy way to create a certain type of triangle.
-/// For examples, please see the different functions that `TriangleShape`
+/// For examples, please see the different functions that `Triangle`
 /// implements.
-#[expect(
-    clippy::module_name_repetitions,
-    reason = "Will be renamed to Triangle in the next major release."
-)]
 #[non_exhaustive]
-pub struct TriangleShape {
+pub struct Triangle {
     /// Stores the `VertexBuffer` that represents the triangle.
     /// See the documentation for `VertexBuffer` for more info.
-    /// The `TriangleShape::draw` method will call `vertex_buffer.draw`.
+    /// The `Triangle::draw` method will call `vertex_buffer.draw`.
     vertex_buffer: VertexBuffer,
 }
 
-impl TriangleShape {
-    /// Create a new `TriangleShape`from a list of 15 `f32`s. The list is a set
+impl Triangle {
+    /// Create a new `Triangle`from a list of 15 `f32`s. The list is a set
     /// of 3 vertices, each containing two components:
     /// - a *position* made up of `2` `f32`s (x, y)
     /// - a *color* made up of `3` `f32`s (r, g, b)
@@ -97,7 +93,7 @@ impl TriangleShape {
     ///
     /// ``` rust
     /// let shader = shape2d_shader();
-    /// let triangle = TriangleShape::new(&[
+    /// let triangle = Triangle::new(&[
     ///     -0.5, -0.5, 1.0, 0.0, 0.0,
     ///      0.5, -0.5, 0.0, 1.0, 0.0,
     ///     -0.5,  0.5, 0.0, 0.0, 1.0,
@@ -109,13 +105,13 @@ impl TriangleShape {
     /// ```
     #[inline]
     #[must_use]
-    pub fn new(vertices: &[f32; 15]) -> TriangleShape {
+    pub fn new(vertices: &[f32; 15]) -> Triangle {
         let vertex_buffer = VertexBuffer::new(vertices, &[0, 1, 2]);
         vertex_buffer.set_layout(&[2_i32, 3_i32]);
-        TriangleShape { vertex_buffer }
+        Triangle { vertex_buffer }
     }
 
-    /// Create a new `TriangleShape` from a list of 6 `f32`s and a color for the
+    /// Create a new `Triangle` from a list of 6 `f32`s and a color for the
     /// entire triangle. The list is a set of 3 vertices, each containing one
     /// component:
     /// - a *position* made up of `2` `f32`s (x, y)
@@ -123,13 +119,13 @@ impl TriangleShape {
     /// As the name implies, this function will create a new triangle with a
     /// single, solid color for the entire triangle. If you need to interpolate
     /// (blend) between different colors and have different colors for each
-    /// vertex, use the `TriangleShape::new` function.
+    /// vertex, use the `Triangle::new` function.
     ///
     /// ## Example usage
     ///
     /// ``` rust
     /// let shader = shape2d_shader();
-    /// let triangle = TriangleShape::new_solid(&[
+    /// let triangle = Triangle::new_solid(&[
     ///     -0.5, -0.5,
     ///      0.5, -0.5,
     ///     -0.5,  0.5,
@@ -142,16 +138,16 @@ impl TriangleShape {
     #[inline]
     #[must_use]
     #[rustfmt::skip]
-    pub fn new_solid(vertices: &[f32; 6], color: &Color) -> TriangleShape {
+    pub fn new_solid(vertices: &[f32; 6], color: &Color) -> Triangle {
         let (r, g, b, _) = color.gl();
-        TriangleShape::new(&[
+        Triangle::new(&[
             vertices[0], vertices[1], r, g, b,
             vertices[2], vertices[3], r, g, b,
             vertices[4], vertices[5], r, g, b,
         ])
     }
 
-    /// Create a new `TriangleShape` as an isosceles triangle with a flat base.
+    /// Create a new `Triangle` as an isosceles triangle with a flat base.
     /// Isosceles triangles have two sides the same.
     /// The coordinates for the isosceles triangle are calculated like this:
     ///
@@ -173,7 +169,7 @@ impl TriangleShape {
     ///
     /// ``` rust
     /// let shader = shape2d_shader();
-    /// let triangle = TriangleShape::new_flat_isosceles(
+    /// let triangle = Triangle::new_flat_isosceles(
     ///     -0.5, -0.5, 1.0, 1.0,
     ///     Color::new(63, 191, 91)
     /// );
@@ -184,14 +180,8 @@ impl TriangleShape {
     /// ```
     #[inline]
     #[must_use]
-    pub fn new_flat_isosceles(
-        x: f32,
-        y: f32,
-        width: f32,
-        height: f32,
-        color: &Color,
-    ) -> TriangleShape {
-        TriangleShape::new_solid(
+    pub fn new_flat_isosceles(x: f32, y: f32, width: f32, height: f32, color: &Color) -> Triangle {
+        Triangle::new_solid(
             &[x, y, x + width, y, width.mul_add(0.5, x), y + height],
             color,
         )
@@ -209,7 +199,7 @@ impl TriangleShape {
     ///
     /// ``` rust
     /// let shader = shape2d_shader();
-    /// let triangle = TriangleShape::new_solid(&[
+    /// let triangle = Triangle::new_solid(&[
     ///     -0.5, -0.5,
     ///      0.5, -0.5,
     ///     -0.5,  0.5,
