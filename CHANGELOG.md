@@ -92,3 +92,4 @@ Non-breaking changes:
 ## 3.5.5 -> 4.5.5 (major, breaking)
 
 - Rename `RectangleShape` -> `Rectangle`
+- Rename `TriangleShape` -> `Triangle`
