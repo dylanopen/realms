@@ -234,19 +234,15 @@ impl TriangleShape {
 /// an easy way to create a certain type of triangle.
 /// For examples, please see the different functions that `TriangleShape`
 /// implements.
-#[expect(
-    clippy::module_name_repetitions,
-    reason = "Will be renamed to Rectangle in the next major release."
-)]
 #[non_exhaustive]
-pub struct RectangleShape {
+pub struct Rectangle {
     /// Stores the `VertexBuffer` that represents the triangle.
     /// See the documentation for `VertexBuffer` for more info.
     /// The `TriangleShape::draw` method will call `vertex_buffer.draw`.
     vertex_buffer: VertexBuffer,
 }
 
-impl RectangleShape {
+impl Rectangle {
     /// Create a new `TriangleShape`from a list of 15 `f32`s. The list is a set
     /// of 3 vertices, each containing two components:
     /// - a *position* made up of `2` `f32`s (x, y)
@@ -268,10 +264,10 @@ impl RectangleShape {
     /// ```
     #[inline]
     #[must_use]
-    pub fn new(vertices: &[f32; 20]) -> RectangleShape {
+    pub fn new(vertices: &[f32; 20]) -> Rectangle {
         let vertex_buffer = VertexBuffer::new(vertices, &[0, 1, 2, 2, 3, 0]);
         vertex_buffer.set_layout(&[2_i32, 3_i32]);
-        RectangleShape { vertex_buffer }
+        Rectangle { vertex_buffer }
     }
 
     /// Create a new `RectangleShape` from a list of 8 `f32`s and a color for
@@ -302,9 +298,9 @@ impl RectangleShape {
     #[inline]
     #[must_use]
     #[rustfmt::skip]
-    pub fn new_solid(vertices: &[f32; 8], color: &Color) -> RectangleShape {
+    pub fn new_solid(vertices: &[f32; 8], color: &Color) -> Rectangle {
         let (r, g, b, _) = color.gl();
-        RectangleShape::new(&[
+        Rectangle::new(&[
             vertices[0], vertices[1], r, g, b,
             vertices[2], vertices[3], r, g, b,
             vertices[4], vertices[5], r, g, b,
@@ -346,8 +342,8 @@ impl RectangleShape {
     /// ```
     #[inline]
     #[must_use]
-    pub fn new_flat(x: f32, y: f32, width: f32, height: f32, color: &Color) -> RectangleShape {
-        RectangleShape::new_solid(
+    pub fn new_flat(x: f32, y: f32, width: f32, height: f32, color: &Color) -> Rectangle {
+        Rectangle::new_solid(
             &[x, y, x + width, y, x + width, y + height, x, y + height],
             color,
         )
