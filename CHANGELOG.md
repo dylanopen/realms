@@ -88,3 +88,9 @@ Non-breaking changes:
 - Fix texture loading to support RGBA
 - Create example 5: texture
 - Add formatting checks to CI workflows
+
+## 3.5.5 -> 4.5.5 (major, breaking)
+
+- Rename `RectangleShape` -> `Rectangle`
+- Rename `TriangleShape` -> `Triangle`
+- Rename `shape2d_shader` -> `shader_2d`

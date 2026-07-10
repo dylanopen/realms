@@ -22,7 +22,7 @@ use crate::vertex::VertexBuffer;
 /// ## Example usage
 ///
 /// ``` rust
-/// let shape2d_program = shape2d_shader();
+/// let shape2d_program = shader_2d();
 /// let triangle = Triangle::new(...);
 /// while w.is_running() {
 ///     ...
@@ -44,13 +44,9 @@ use crate::vertex::VertexBuffer;
     clippy::unwrap_used,
     reason = "This should never panic as it is compile-time included. However, it is possible, see the doc-comment."
 )]
-#[expect(
-    clippy::module_name_repetitions,
-    reason = "Will be renamed to shader_2d in the next major release."
-)]
 #[inline]
 #[must_use]
-pub fn shape2d_shader() -> ShaderProgram {
+pub fn shader_2d() -> ShaderProgram {
     ShaderProgram::new(vec![
         Shader::load_str(
             ShaderType::Vertex,
@@ -66,29 +62,25 @@ pub fn shape2d_shader() -> ShaderProgram {
     .unwrap()
 }
 
-/// The `TriangleShape` struct represents any 3 points in the 2d plane. Each
+/// The `Triangle` struct represents any 3 points in the 2d plane. Each
 /// point (vertex) is made up of:
 /// - 2 position components (x, y)
 /// - 3 color components (r, g, b)
 ///
-/// There are many different `new` methods for a `TriangleShape`, each providing
+/// There are many different `new` methods for a `Triangle`, each providing
 /// an easy way to create a certain type of triangle.
-/// For examples, please see the different functions that `TriangleShape`
+/// For examples, please see the different functions that `Triangle`
 /// implements.
-#[expect(
-    clippy::module_name_repetitions,
-    reason = "Will be renamed to Triangle in the next major release."
-)]
 #[non_exhaustive]
-pub struct TriangleShape {
+pub struct Triangle {
     /// Stores the `VertexBuffer` that represents the triangle.
     /// See the documentation for `VertexBuffer` for more info.
-    /// The `TriangleShape::draw` method will call `vertex_buffer.draw`.
+    /// The `Triangle::draw` method will call `vertex_buffer.draw`.
     vertex_buffer: VertexBuffer,
 }
 
-impl TriangleShape {
-    /// Create a new `TriangleShape`from a list of 15 `f32`s. The list is a set
+impl Triangle {
+    /// Create a new `Triangle`from a list of 15 `f32`s. The list is a set
     /// of 3 vertices, each containing two components:
     /// - a *position* made up of `2` `f32`s (x, y)
     /// - a *color* made up of `3` `f32`s (r, g, b)
@@ -96,8 +88,8 @@ impl TriangleShape {
     /// ## Example usage
     ///
     /// ``` rust
-    /// let shader = shape2d_shader();
-    /// let triangle = TriangleShape::new(&[
+    /// let shader = shader_2d();
+    /// let triangle = Triangle::new(&[
     ///     -0.5, -0.5, 1.0, 0.0, 0.0,
     ///      0.5, -0.5, 0.0, 1.0, 0.0,
     ///     -0.5,  0.5, 0.0, 0.0, 1.0,
@@ -109,13 +101,13 @@ impl TriangleShape {
     /// ```
     #[inline]
     #[must_use]
-    pub fn new(vertices: &[f32; 15]) -> TriangleShape {
+    pub fn new(vertices: &[f32; 15]) -> Triangle {
         let vertex_buffer = VertexBuffer::new(vertices, &[0, 1, 2]);
         vertex_buffer.set_layout(&[2_i32, 3_i32]);
-        TriangleShape { vertex_buffer }
+        Triangle { vertex_buffer }
     }
 
-    /// Create a new `TriangleShape` from a list of 6 `f32`s and a color for the
+    /// Create a new `Triangle` from a list of 6 `f32`s and a color for the
     /// entire triangle. The list is a set of 3 vertices, each containing one
     /// component:
     /// - a *position* made up of `2` `f32`s (x, y)
@@ -123,13 +115,13 @@ impl TriangleShape {
     /// As the name implies, this function will create a new triangle with a
     /// single, solid color for the entire triangle. If you need to interpolate
     /// (blend) between different colors and have different colors for each
-    /// vertex, use the `TriangleShape::new` function.
+    /// vertex, use the `Triangle::new` function.
     ///
     /// ## Example usage
     ///
     /// ``` rust
-    /// let shader = shape2d_shader();
-    /// let triangle = TriangleShape::new_solid(&[
+    /// let shader = shader_2d();
+    /// let triangle = Triangle::new_solid(&[
     ///     -0.5, -0.5,
     ///      0.5, -0.5,
     ///     -0.5,  0.5,
@@ -142,16 +134,16 @@ impl TriangleShape {
     #[inline]
     #[must_use]
     #[rustfmt::skip]
-    pub fn new_solid(vertices: &[f32; 6], color: &Color) -> TriangleShape {
+    pub fn new_solid(vertices: &[f32; 6], color: &Color) -> Triangle {
         let (r, g, b, _) = color.gl();
-        TriangleShape::new(&[
+        Triangle::new(&[
             vertices[0], vertices[1], r, g, b,
             vertices[2], vertices[3], r, g, b,
             vertices[4], vertices[5], r, g, b,
         ])
     }
 
-    /// Create a new `TriangleShape` as an isosceles triangle with a flat base.
+    /// Create a new `Triangle` as an isosceles triangle with a flat base.
     /// Isosceles triangles have two sides the same.
     /// The coordinates for the isosceles triangle are calculated like this:
     ///
@@ -172,8 +164,8 @@ impl TriangleShape {
     /// ## Example usage
     ///
     /// ``` rust
-    /// let shader = shape2d_shader();
-    /// let triangle = TriangleShape::new_flat_isosceles(
+    /// let shader = shader_2d();
+    /// let triangle = Triangle::new_flat_isosceles(
     ///     -0.5, -0.5, 1.0, 1.0,
     ///     Color::new(63, 191, 91)
     /// );
@@ -184,14 +176,8 @@ impl TriangleShape {
     /// ```
     #[inline]
     #[must_use]
-    pub fn new_flat_isosceles(
-        x: f32,
-        y: f32,
-        width: f32,
-        height: f32,
-        color: &Color,
-    ) -> TriangleShape {
-        TriangleShape::new_solid(
+    pub fn new_flat_isosceles(x: f32, y: f32, width: f32, height: f32, color: &Color) -> Triangle {
+        Triangle::new_solid(
             &[x, y, x + width, y, width.mul_add(0.5, x), y + height],
             color,
         )
@@ -199,7 +185,7 @@ impl TriangleShape {
 
     /// Draw the triangle to the screen.
     /// You **must** pass in a reference to the shader program returned by the
-    /// `shape2d_shader()` function, or a compatible shader program, or else
+    /// `shader_2d()` function, or a compatible shader program, or else
     /// this method will fail silently.
     ///
     /// This method currently simply calls the `draw` method of the
@@ -208,8 +194,8 @@ impl TriangleShape {
     /// ## Example usage
     ///
     /// ``` rust
-    /// let shader = shape2d_shader();
-    /// let triangle = TriangleShape::new_solid(&[
+    /// let shader = shader_2d();
+    /// let triangle = Triangle::new_solid(&[
     ///     -0.5, -0.5,
     ///      0.5, -0.5,
     ///     -0.5,  0.5,
@@ -225,29 +211,25 @@ impl TriangleShape {
     }
 }
 
-/// The `RectangleShape` struct represents any 3 points in the 2d plane. Each
+/// The `Rectangle` struct represents any 3 points in the 2d plane. Each
 /// point (vertex) is made up of:
 /// - 2 position components (x, y)
 /// - 3 color components (r, g, b)
 ///
-/// There are many different `new` methods for a `TriangleShape`, each providing
-/// an easy way to create a certain type of triangle.
-/// For examples, please see the different functions that `TriangleShape`
+/// There are many different `new` methods for a `Rectangle`, each providing
+/// an easy way to create a certain type of rectangle.
+/// For examples, please see the different functions that `Rectangle`
 /// implements.
-#[expect(
-    clippy::module_name_repetitions,
-    reason = "Will be renamed to Rectangle in the next major release."
-)]
 #[non_exhaustive]
-pub struct RectangleShape {
-    /// Stores the `VertexBuffer` that represents the triangle.
+pub struct Rectangle {
+    /// Stores the `VertexBuffer` that represents the rectangle.
     /// See the documentation for `VertexBuffer` for more info.
-    /// The `TriangleShape::draw` method will call `vertex_buffer.draw`.
+    /// The `Rectangle::draw` method will call `vertex_buffer.draw`.
     vertex_buffer: VertexBuffer,
 }
 
-impl RectangleShape {
-    /// Create a new `TriangleShape`from a list of 15 `f32`s. The list is a set
+impl Rectangle {
+    /// Create a new `Rectangle` from a list of 15 `f32`s. The list is a set
     /// of 3 vertices, each containing two components:
     /// - a *position* made up of `2` `f32`s (x, y)
     /// - a *color* made up of `3` `f32`s (r, g, b)
@@ -255,26 +237,27 @@ impl RectangleShape {
     /// ## Example usage
     ///
     /// ``` rust
-    /// let shader = shape2d_shader();
-    /// let triangle = TriangleShape::new(&[
+    /// let shader = shader_2d();
+    /// let rectangle = Rectangle::new(&[
     ///     -0.5, -0.5, 1.0, 0.0, 0.0,
     ///      0.5, -0.5, 0.0, 1.0, 0.0,
+    ///      0.5,  0.5, 1.0, 1.0, 1.0,
     ///     -0.5,  0.5, 0.0, 0.0, 1.0,
     /// ]);
     /// while w.is_running() {
     ///     ...
-    ///     triangle.draw(&shader);
+    ///     rectangle.draw(&shader);
     /// }
     /// ```
     #[inline]
     #[must_use]
-    pub fn new(vertices: &[f32; 20]) -> RectangleShape {
+    pub fn new(vertices: &[f32; 20]) -> Rectangle {
         let vertex_buffer = VertexBuffer::new(vertices, &[0, 1, 2, 2, 3, 0]);
         vertex_buffer.set_layout(&[2_i32, 3_i32]);
-        RectangleShape { vertex_buffer }
+        Rectangle { vertex_buffer }
     }
 
-    /// Create a new `RectangleShape` from a list of 8 `f32`s and a color for
+    /// Create a new `Rectangle` from a list of 8 `f32`s and a color for
     /// the entire rectangle. The list is a set of 4 vertices, each containing
     /// one component:
     /// - a *position* made up of `2` `f32`s (x, y)
@@ -282,13 +265,13 @@ impl RectangleShape {
     /// As the name implies, this function will create a new rectangle with a
     /// single, solid color for the entire rectangle. If you need to interpolate
     /// (blend) between different colors and have different colors for each
-    /// vertex, use the `RectangleShape::new` function.
+    /// vertex, use the `Rectangle::new` function.
     ///
     /// ## Example usage
     ///
     /// ``` rust
-    /// let shader = shape2d_shader();
-    /// let rectangle = RectangleShape::new_solid(&[
+    /// let shader = shader_2d();
+    /// let rectangle = Rectangle::new_solid(&[
     ///     -0.5, -0.5,
     ///      0.5, -0.5,
     ///      0.5,  0.5,
@@ -302,9 +285,9 @@ impl RectangleShape {
     #[inline]
     #[must_use]
     #[rustfmt::skip]
-    pub fn new_solid(vertices: &[f32; 8], color: &Color) -> RectangleShape {
+    pub fn new_solid(vertices: &[f32; 8], color: &Color) -> Rectangle {
         let (r, g, b, _) = color.gl();
-        RectangleShape::new(&[
+        Rectangle::new(&[
             vertices[0], vertices[1], r, g, b,
             vertices[2], vertices[3], r, g, b,
             vertices[4], vertices[5], r, g, b,
@@ -312,7 +295,7 @@ impl RectangleShape {
         ])
     }
 
-    /// Create a new `RectangleShape` from an `x` position, `y` position,
+    /// Create a new `Rectangle` from an `x` position, `y` position,
     /// `width` and `height`.
     ///
     /// The coordinates for the rectangle are calculated like this:
@@ -334,8 +317,8 @@ impl RectangleShape {
     /// ## Example usage
     ///
     /// ``` rust
-    /// let shader = shape2d_shader();
-    /// let rectangle = RectangleShape::new_flat(
+    /// let shader = shader_2d();
+    /// let rectangle = Rectangle::new_flat(
     ///     -0.5, -0.5, 1.0, 1.0,
     ///     Color::new(63, 191, 91)
     /// );
@@ -346,8 +329,8 @@ impl RectangleShape {
     /// ```
     #[inline]
     #[must_use]
-    pub fn new_flat(x: f32, y: f32, width: f32, height: f32, color: &Color) -> RectangleShape {
-        RectangleShape::new_solid(
+    pub fn new_flat(x: f32, y: f32, width: f32, height: f32, color: &Color) -> Rectangle {
+        Rectangle::new_solid(
             &[x, y, x + width, y, x + width, y + height, x, y + height],
             color,
         )
@@ -355,7 +338,7 @@ impl RectangleShape {
 
     /// Draw the rectangle to the screen.
     /// You **must** pass in a reference to the shader program returned by the
-    /// `shape2d_shader()` function, or a compatible shader program, or else
+    /// `shader_2d()` function, or a compatible shader program, or else
     /// this method will fail silently.
     ///
     /// This method currently simply calls the `draw` method of the
@@ -364,8 +347,8 @@ impl RectangleShape {
     /// ## Example usage
     ///
     /// ``` rust
-    /// let shader = shape2d_shader();
-    /// let rectangle = RectangleShape::new_solid(&[
+    /// let shader = shader_2d();
+    /// let rectangle = Rectangle::new_solid(&[
     ///     -0.5, -0.5,
     ///      0.5, -0.5,
     ///      0.5,  0.5,
