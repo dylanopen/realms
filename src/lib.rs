@@ -20,6 +20,7 @@
 // Realms modules //
 pub mod data;
 pub mod input;
+pub mod prelude;
 pub mod shader;
 pub mod shape;
 pub mod texture;
