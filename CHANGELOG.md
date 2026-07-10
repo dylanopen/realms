@@ -94,3 +94,9 @@ Non-breaking changes:
 - Rename `RectangleShape` -> `Rectangle`
 - Rename `TriangleShape` -> `Triangle`
 - Rename `shape2d_shader` -> `shader_2d`
+
+## 4.5.5 -> 4.6.5 (patch)
+
+- Create `prelude` module
+- You can now do `use realms::prelude::*` to get all the important imports
+
